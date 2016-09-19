@@ -18,9 +18,9 @@ In general, you use the following steps to create Screenlets:
 1. Determine your Screenlet's location. Where you create your Screenlet depends 
    on how you'll use it. 
 
-2. Create the Screenlet's UI (it's View). Although this step presents all the 
-   information you need to create a View for your Screenlet, you may first want 
-   to learn how to 
+2. Create the Screenlet's UI (it's View). Although this tutorial presents all 
+   the information you need to create a View for your Screenlet, you may first 
+   want to learn how to 
    [create a View](/develop/tutorials/-/knowledge_base/7-0/creating-android-views). 
    For more information on Views in general, see 
    [the tutorial on using Views with Screenlets](/develop/tutorials/-/knowledge_base/7-0/using-views-in-android-screenlets). 
@@ -28,7 +28,12 @@ In general, you use the following steps to create Screenlets:
 3. Create the Screenlet's Interactor. Interactors are Screenlet components that 
    make server calls. 
 
-4. Create the Screenlet class. The Screenlet class is the Screenlet's central 
+4. Define the Screenlet’s attributes. These are the XML attributes the app 
+   developer can set when inserting the Screenlet’s XML. These attributes 
+   control aspects of the Screenlet’s behavior. You'll add functionality to 
+   these attributes in the Screenlet class. 
+
+5. Create the Screenlet class. The Screenlet class is the Screenlet's central 
    component. It controls the Screenlet's behavior, and is the component the app 
    developer interacts with when inserting a Screenlet. 
 
@@ -46,11 +51,11 @@ it, create it in a new package inside your Android app project. This lets you
 reference and access Liferay Screens's core, in addition to all the View Sets 
 you may have imported. 
 
-If you want to reuse your Screenlet in another app, create it in a new Android
+If you want to reuse your Screenlet in another app, create it in a new Android 
 application module. The tutorial 
-[Packaging Android Screenlets](/develop/tutorials/-/knowledge_base/7-0/packaging-android-screenlets)
+[Packaging Android Screenlets](/develop/tutorials/-/knowledge_base/7-0/packaging-android-screenlets) 
 explains how to do this. When your Screenlet's project is in place, you can 
-start creating its user interface. 
+start by creating the Screenlet's UI. 
 
 ## Creating the Screenlet's UI [](id=creating-the-screenlets-ui)
 
@@ -437,23 +442,79 @@ from a Liferay instance. An Interactor is made up of several components:
 Sweetness! Your Screenlet's Interactor is done. Next, you'll create the 
 Screenlet class. 
 
+## Defining Screenlet Attributes in Your App [](id=defining-screenlet-attributes-in-your-app)
+
+Before creating the Screenlet class, you should define its attributes. These are 
+the `liferay` attributes the app developer can set when inserting the 
+Screenlet's XML in an activity or fragment layout. For example, to use 
+[Login Screenlet](/develop/reference/-/knowledge_base/7-0/loginscreenlet-for-android), 
+the app developer could insert the following Login Screenlet XML in an activity 
+or fragment layout: 
+
+    <com.liferay.mobile.screens.auth.login.LoginScreenlet
+        android:id="@+id/login_screenlet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        liferay:basicAuthMethod="email"
+        liferay:layoutId="@layout/login_default"
+        />
+
+The app developer can set the `liferay` attributes `basicAuthMethod` and 
+`layoutId` to set Login Screenlet's authentication method and View, 
+respectively. The Screenlet class reads these settings to enable the appropriate 
+functionality. 
+
+When creating a Screenlet, you can define the attributes you want to make 
+available to app developers. You do this in an XML file inside your Android 
+project's `res/values` directory. For example, Add Bookmark Screenlet's 
+attributes are defined in the 
+[Screenlet's `bookmark_attrs.xml` file](https://github.com/liferay/liferay-screens/blob/master/android/samples/addbookmarkscreenlet/src/main/res/values/bookmark_attrs.xml): 
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <resources>
+        <declare-styleable name="AddBookmarkScreenlet">
+            <attr name="layoutId"/>
+            <attr name="folderId"/>
+            <attr name="defaultTitle" format="string"/>
+        </declare-styleable>
+    </resources>
+
+This defines the attributes `layoutId`, `folderId`, and `defaultTitle`. Add 
+Bookmark Screenlet's Screenlet class adds functionality to these attributes. 
+Here's a brief description of what each does: 
+
+- `layoutId`: Sets the View that displays the Screenlet. This functions the same 
+as the `layoutId` attribute in 
+[Liferay's existing Screenlets](/develop/reference/-/knowledge_base/7-0/screenlets-in-liferay-screens-for-android). 
+
+- `folderId`: Sets ID of the folder in the Bookmarks portlet that the Screenlet 
+adds bookmarks to. 
+
+- `defaultTitle`: Sets each Bookmark's default title. 
+
+
+
+Now that you've defined your Screenlet's attributes, you're ready to create the 
+Screenlet class.
+
 ## Creating the Screenlet Class [](id=creating-the-screenlet-class)
 
 The Screenlet class is the central hub of a Screenlet. It contains attributes 
 for configuring the Screenlet's behavior, a reference to the Screenlet's View, 
-methods for invoking Interactor operations, and more. Also, when using a 
-Screenlet, app developers primarily interact with its Screenlet class. In other 
-words, if a Screenlet were to become self-aware, it would happen in its 
-Screenlet class (though we're reasonably confident this won't happen). 
+methods for invoking Interactor operations, and more. When using a Screenlet, 
+app developers primarily interact with its Screenlet class. In other words, if a 
+Screenlet were to become self-aware, it would happen in its Screenlet class 
+(though we're reasonably confident this won't happen). 
 
 To make all this possible, your Screenlet class must implement the Interactor's 
 listener interface, and extend 
-[Screens's `BaseScreenlet` class](https://github.com/liferay/liferay-screens/blob/master/android/library/src/main/java/com/liferay/mobile/screens/base/BaseScreenlet.java). 
+[Screens's `BaseScreenlet` class](https://github.com/liferay/liferay-screens/blob/master/android/library/src/main/java/com/liferay/mobile/screens/base/BaseScreenlet.java) 
 with the View Model interface and Interactor class as type arguments. Your 
 Screenlet class should also contain instance variables, and accompanying getters 
 and setters, for the listener and any other attributes that the app developer 
 needs to access. For constructors, you can call 
 [`BaseScreenlet`'s constructors](https://github.com/liferay/liferay-screens/blob/master/android/library/src/main/java/com/liferay/mobile/screens/base/BaseScreenlet.java#L45-L61). 
+
 For example, 
 [Add Bookmark Screenlet's Screenlet class](https://github.com/liferay/liferay-screens/blob/master/android/samples/addbookmarkscreenlet/src/main/java/com/liferay/mobile/screens/bookmark/AddBookmarkScreenlet.java) 
 extends `BaseScreenlet<AddBookmarkViewModel, AddBookmarkInteractor>` and 
@@ -499,119 +560,63 @@ constructors:
 
         ...
 
-The `AddBookmarkScreenlet` class uses the internal listener class
-`AddBookmarkListener` as an external listener class. It provides public methods
-for the app's classes to register for its events. In the code below, the
-Screenlet class has a public method for external classes to register as
-listeners and methods to propagate events to them: 
+Next, implement the Screenlet's listener methods. This lets the Screenlet class 
+receive the server call's results and thus act as the listener. These methods 
+should communicate the server call's results to the View (via the View Model), 
+and any other listener instances (via the Screenlet class's listener instance). 
+For example, here are Add Bookmark Screenlet's listener method implementations:
 
-	public void onAddBookmarkSuccess() {
-		getViewModel().showFinishOperation(null);
+    public void onAddBookmarkSuccess() {
+        getViewModel().showFinishOperation(null);
 
-		if (_listener != null) {
-			_listener.onAddBookmarkSuccess();
-		}
-	}
-
-	public void onAddBookmarkFailure(Exception e) {
-		getViewModel().showFailedOperation(null, e);
-
-		if (_listener != null) {
-			_listener.onAddBookmarkFailure(e);
-		}
-	}	   
-
-	public AddBookmarkListener getListener() {
-		return _listener;
-	}
-
-	public void setListener(AddBookmarkListener listener) {
-		_listener = listener;
-	}
-
-	private Integer _folderId;
-	private AddBookmarkListener _listener; 
-
-You can even notify the app using a different mechanism such as the Event Bus or
-Android's `BroadcastReceiver`. Note that the implemented interface methods call
-the View to modify the UI and notify the app's listener. This lets your app 
-perform any action. Next you must implement `BaseScreenlet`'s abstract methods.
-
-The first `BaseScreenlet` method to implement is the `createScreenletView`
-method. In this method, you get attributes from the XML definition and then
-either store them as class attributes or otherwise use them. Next, inflate the
-View using the layout specified in the `liferay:layoutId` attribute. You can
-even use the read attributes to configure the initial state of the View.
-
-The second abstract `BaseScreenlet` method to implement is `createInteractor`.
-This is a factory method in which you must create the corresponding Interactor
-for a specific action name, passing in the Screenlet's ID. `BaseScreenlet`'s
-method `getScreenletId()` returns the ID. Note that a single Screenlet may have
-several interactions (use cases). Each interaction should be implemented in a
-separate Interactor. In the example Add Bookmark Screenlet, there is only one
-Interactor, so the object is created in the `createInteractor` method.
-Alternatively, you can retrieve the instance via your IoC framework.
-
-The third and final abstract `BaseScreenlet` method to implement is
-`onUserAction`. In this method, retrieve the data entered in the View and start
-the operation by using the data and the supplied Interactor.
-
-Here's the
-[`AddBookmarkScreenlet`](https://github.com/liferay/liferay-screens/blob/master/android/samples/addbookmarkscreenlet/src/main/java/com/liferay/mobile/screens/bookmark/AddBookmarkScreenlet.java)
-class from the Add Bookmark Screenlet:
-
-    package com.liferay.mobile.screens.bookmark;
-
-    import android.content.Context;
-    import android.content.res.TypedArray;
-    import android.util.AttributeSet;
-    import android.view.LayoutInflater;
-    import android.view.View;
-
-    import com.liferay.mobile.screens.base.BaseScreenlet;
-    import com.liferay.mobile.screens.bookmark.interactor.AddBookmarkInteractor;
-    import com.liferay.mobile.screens.bookmark.interactor.AddBookmarkInteractorImpl;
-    import com.liferay.mobile.screens.bookmark.interactor.AddBookmarkListener;
-    import com.liferay.mobile.screens.bookmark.view.AddBookmarkViewModel;
-
-    /**
-     * @author Javier Gamarra
-     */
-    public class AddBookmarkScreenlet
-        extends BaseScreenlet<AddBookmarkViewModel, AddBookmarkInteractor>
-        implements AddBookmarkListener {
-
-        public AddBookmarkScreenlet(Context context) {
-            super(context);
+        if (_listener != null) {
+            _listener.onAddBookmarkSuccess();
         }
+    }
 
-        public AddBookmarkScreenlet(Context context, AttributeSet attributes) {
-            super(context, attributes);
+    public void onAddBookmarkFailure(Exception e) {
+        getViewModel().showFailedOperation(null, e);
+
+        if (_listener != null) {
+            _listener.onAddBookmarkFailure(e);
         }
+    }
 
-        public AddBookmarkScreenlet(Context context, AttributeSet attributes, int defaultStyle) {
-            super(context, attributes, defaultStyle);
-        }
+These methods are called when the server call succeeds or fails, respectively. 
+They first use `getViewModel()` to get a View Model instance, and then call the 
+`BaseViewModel` methods `showFinishOperation` and `showFailedOperation` to send 
+the server call's results to the View. The `showFinishOperation` call sends 
+`null` because a successful server call to add a bookmark doesn't return any 
+objects. If a successful server call in your Screenlet returns any objects you 
+need to display, then you should send them in this `showFinishOperation` call. 
+The `showFailedOperation` call sends the `Exception` that results from a failed 
+server call to the View. This lets you display an informative error to the user. 
+The `onAddBookmarkSuccess` and `onAddBookmarkFailure` implementations then call 
+the listener instance's method of the same name. This sends the server call's 
+results to any other classes that implement the listener interface, such as the 
+activity or fragment that uses the Screenlet. 
 
-        public void onAddBookmarkSuccess() {
-            getViewModel().showFinishOperation(null);
+Next, you must implement `BaseScreenlet`'s abstract methods: 
 
-            if (_listener != null) {
-                _listener.onAddBookmarkSuccess();
-            }
-        }
+- `createScreenletView`: Reads the app developer's Screenlet attribute settings, 
+  and inflates the View. You'll use an 
+  [Android `TypedArray`](https://developer.android.com/reference/android/content/res/TypedArray.html) 
+  to retrieve the attribute settings. You should set the attribute values to the 
+  appropriate variables, and set any default values you need to display via a 
+  View Model reference. 
 
-        public void onAddBookmarkFailure(Exception e) {
-            getViewModel().showFailedOperation(null, e);
-
-            if (_listener != null) {
-                _listener.onAddBookmarkFailure(e);
-            }
-        }
+    For example, Add Bookmark Screenlet's `createScreenletView` method gets the 
+    app developer's attribute settings via a `TypedArray`. This includes the 
+    `layoutId`, `defaultTitle`, and `folderId` attributes. The `layoutId` is 
+    used to inflate a View reference (`view`), which is then cast to a View 
+    Model instance (`viewModel`). The View Model instance's `setTitle` method is 
+    then called with `defaultTitle` to set the bookmark's default title. The 
+    method concludes by returnin the View reference. 
 
         @Override
         protected View createScreenletView(Context context, AttributeSet attributes) {
-            TypedArray typedArray = context.getTheme().obtainStyledAttributes(attributes, R.styleable.AddBookmarkScreenlet, 0, 0);
+            TypedArray typedArray = context.getTheme()
+                .obtainStyledAttributes(attributes, R.styleable.AddBookmarkScreenlet, 0, 0);
 
             int layoutId = typedArray.getResourceId(R.styleable.AddBookmarkScreenlet_layoutId, 0);
 
@@ -619,7 +624,7 @@ class from the Add Bookmark Screenlet:
 
             String defaultTitle = typedArray.getString(R.styleable.AddBookmarkScreenlet_defaultTitle);
 
-            _folderId = typedArray.getInteger(R.styleable.AddBookmarkScreenlet_folderId, 0);
+            _folderId = castToLong(typedArray.getString(R.styleable.AddBookmarkScreenlet_folderId));
 
             typedArray.recycle();
 
@@ -629,10 +634,27 @@ class from the Add Bookmark Screenlet:
             return view;
         }
 
+- `createInteractor`: Instantiates the Screenlet's Interactor. For example, Add 
+  Bookmark Screenlet's `createInteractor` method calls the 
+  `AddBookmarkInteractorImpl` constructor to create a new instance of this 
+  Interactor:
+
         @Override
         protected AddBookmarkInteractor createInteractor(String actionName) {
             return new AddBookmarkInteractorImpl(getScreenletId());
         }
+
+- `onUserAction`: Retrieves any data the user has entered in the View, and 
+  starts the Screenlet's server operation via an Interactor instance. If your 
+  Screenlet doesn't take user input, then this method only needs to do the 
+  latter. 
+
+    The example Add Bookmark Screenlet takes user input (the bookmark's URL and 
+    title), so its `onUserAction` method must retrieve this data. This method 
+    does so via a View Model instance it retrieves with the `getViewModel()` 
+    method. The `onUserAction` method then calls the Interactor's `addBookmark` 
+    method with the user input. If this operation fails, `onUserAction` calls 
+    the listener's `onAddBookmarkFailure` method with the `Exception`: 
 
         @Override
         protected void onUserAction(String userActionName, AddBookmarkInteractor interactor, Object... args) {
@@ -648,101 +670,64 @@ class from the Add Bookmark Screenlet:
             }
         }
 
-        public Integer getFolderId() {
-            return _folderId;
-        }
-
-        public void setFolderId(Integer folderId) {
-            _folderId = folderId;
-        }
-
-        public AddBookmarkListener getListener() {
-            return _listener;
-        }
-
-        public void setListener(AddBookmarkListener listener) {
-            _listener = listener;
-        }
-
-        private Integer _folderId;
-        private AddBookmarkListener _listener;
-
-    }
-
-If you copied the code above, you'll see a few errors regarding
-`R.styleable.AddBookmarkScreenlet*` references. The next section explains how to
-resolve such errors. 
-
-Great! Now you know how to create a Screenlet class. 
-
-## Defining Screenlet Attributes in Your App [](id=defining-screenlet-attributes-in-your-app)
-
-To be able to read the Screenlet attributes, you need to add an XML file in
-`res/values` that defines those attributes. Here's the `bookmark_attrs.xml`
-example for the Add Bookmark Screenlet: 
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <resources>
-        <declare-styleable name="AddBookmarkScreenlet">
-            <attr name="layoutId"/>
-            <attr name="folderId"/>
-            <attr name="defaultTitle" format="string"/>
-        </declare-styleable>
-    </resources>
-
-Now you can use your Screenlet as you would any other. Just remember to use the
-XML file in which you built your Screenlet's UI as the value of the
-`liferay:layoutId` attribute (the value is `bookmark_default` in this example).
-For example, here's the code to insert the Add Bookmark Screenlet in an Android
-activity: 
-
-    <com.your.package.AddBookmarkScreenlet
-        android:id="@+id/addbookmarks_screenlet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        liferay:folderId="@integer/bookmark_folder"
-        liferay:layoutId="@layout/bookmark_default"
-    />
-
-Note that in your app's `server_context.xml` file, you can specify any
-additional settings your app requires. You can set context variables for your
-Screenlet to use by naming them in your Screenlet's layout XML file and then
-setting their values in your app's `server_context.xml` file.
-
-The Add Bookmark Screenlet's `server_context.xml` file sets the folder into
-which the Screenlet adds bookmarks. The preceding Screenlet element code maps
-the Screenlet's `liferay:folderId` setting to a bookmark folder context integer
-`@integer/bookmark_folder`. In the `server_context.xml` file below, the context
-integer element is set to the ID of a Bookmarks portlet folder. That value is
-in turn assigned to the Screenlet's `folderId` variable, so the Screenlet can
-add bookmarks to that folder. Notice that in addition to the value specified for
-the `bookmark_folder`, values are also specified for `liferay_server`,
-`liferay_company_id`, and the `liferay_group_id`: 
-
-    <?xml version="1.0" encoding="utf-8"?>
-    <resources>
-
-        <!-- Change these values for your Liferay Portal installation -->
-
-        <string name="liferay_server">http://10.0.2.2:8080</string>
-
-        <integer name="liferay_company_id">20154</integer>
-        <integer name="liferay_group_id">20181</integer>
-
-        <!--
-          Create a folder in a Bookmarks portlet on a page in the above portal instance and site.
-          Get that folder's id from Liferay's database and use it here
-        -->
-        <integer name="bookmark_folder">21503</integer>
-
-    </resources>
-
-Congratulations! Your Screenlet is ready to
-[use](/develop/tutorials/-/knowledge_base/7-0/using-screenlets-in-android-apps)
-in Android apps. You can even
+Nice! Your Screenlet is finished! You can now use it 
+[the same way you would any other](/develop/tutorials/-/knowledge_base/7-0/using-screenlets-in-android-apps). 
+If you created your Screenlet in its own project, you can also 
 [package and distribute](/develop/tutorials/-/knowledge_base/7-0/packaging-your-android-screenlets)
-it via the Screens project, JCenter, or Maven Central. Now you know how to
-create Screenlets in Liferay Screens for Android. 
+it via the Screens project, JCenter, or Maven Central. 
+
+To finish the Add Bookmark Screenlet example, the following section shows you 
+how to use this Screenlet. It also shows how you can set default attribute 
+values in an app's `server_context.xml` file. Although you may not need to do 
+this when using your Screenlets, it might come in handy on your way to becoming 
+a master of Screenlets. 
+
+## Using Your Screenlet
+
+To use any Screenlet, you must follow these 
+[general steps](/develop/tutorials/-/knowledge_base/7-0/using-screenlets-in-android-apps): 
+
+1. Insert the Screenlet's XML in the activity or fragment layout you want the 
+   Screenlet to appear in. You can fine-tune the Screenlet's behavior by setting 
+   the Screenlet XML's attributes. 
+
+2. Implement the Screenlet's listener in the activity or fragment class. 
+
+As an example of this, the Liferay Screens 
+[Test App](https://github.com/liferay/liferay-screens/tree/master/android/samples/test-app) 
+uses Add Bookmark Screenlet. You can find the following Add Bookmark Screenlet 
+XML in the 
+[Test App's `add_bookmark.xml` layout](https://github.com/liferay/liferay-screens/blob/master/android/samples/test-app/src/main/res/layout/add_bookmark.xml): 
+
+    <com.liferay.mobile.screens.bookmark.AddBookmarkScreenlet
+        android:id="@+id/bookmark_screenlet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        liferay:folderId="@string/bookmark_folder"
+        liferay:layoutId="@layout/bookmark_default" />
+
+Note that the layout specified by `liferay:layoutId` (`bookmark_default`) 
+matches the layout file of the Screenlet's View (`bookmark_default.xml`). This 
+is how you specify the View to display the Screenlet with. For example, if Add 
+Bookmark Screenlet had another View defined in a layout file named 
+`bookmark_awesome.xml`, you could use that layout by specifying 
+`@layout/bookmark_awesome` as the `liferay:layoutId` attribute's value. 
+
+Also note that the `liferay:folderId` attribute specifies 
+`@string/bookmark_folder` as the bookmark folder's ID. This is an alternative 
+way of specifying an attribute's value. Instead of specifying the value 
+directly, the Test App specifies the value in its 
+[`server_context.xml` file](https://github.com/liferay/liferay-screens/blob/master/android/samples/test-app/src/main/res/values/server_context.xml#L23-L24): 
+
+    ...
+	<string name="bookmark_folder">20622</string>
+	...
+
+This `name` attribute's value, `bookmark_folder` is then used in the Screenlet 
+XML to set the `liferay:folderId` attribute to `20622`.
+
+Great! Now you know how to use the Screenlets you create. You also know a 
+convenient way to specify default values for a Screenlet's attributes. 
 
 ## Related Topics [](id=related-topics)
 
