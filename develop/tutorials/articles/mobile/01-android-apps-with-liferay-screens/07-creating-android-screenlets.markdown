@@ -86,7 +86,7 @@ and layout. The following steps explain how:
 
     For example, Add Bookmark Screenlet needs attributes for each bookmark's URL 
     and title. Its View Model interface, `AddBookmarkViewModel`, therefore 
-    defines getters and setters for its these attributes: 
+    defines getters and setters for these attributes: 
 
         public interface AddBookmarkViewModel extends BaseViewModel {
             String getURL();
@@ -359,7 +359,7 @@ from a Liferay instance. An Interactor is made up of several components:
    server call, you must 
    [use the Mobile SDK to make an asynchronous service call](/develop/tutorials/-/knowledge_base/7-0/invoking-services-asynchronously-from-your-android-app). 
    This means you must get a session, create a callback instance, set the 
-   session to the callback, and then make the server call. You make the server 
+   callback to the session, and then make the server call. You make the server 
    call by creating an instance of the Mobile SDK service (e.g., 
    `BookmarksEntryService`) that can call the Liferay service you need, and then 
    making the call. The Interactor class must also process the event object that 
