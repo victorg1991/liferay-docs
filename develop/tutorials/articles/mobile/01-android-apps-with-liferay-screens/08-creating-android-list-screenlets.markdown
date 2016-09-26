@@ -746,6 +746,22 @@ app. You can even
 contribute it to the Liferay Screens project, or distribute it in Maven Central 
 or JCenter. 
 
+## Sorted List by Comparator [](id=list-sorted-comparator)
+
+As you can see above, `getPageRowsRequest` method has a parameter named query. With this parameter you can set an `OrderByComparator` class. This class allows to sort the results. If you want to set this comparator, you must add the `obcClassName` property in your screenlet:
+
+	<com.liferay.mobile.screens.listbookmark.BookmarkListScreenlet
+		android:id="@+id/bookmarklist_screenlet"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:cachePolicy="REMOTE_FIRST"
+		app:folderId="@string/liferay_bookmark_folder"
+		app:layoutId="@layout/list_bookmarks"
+		app:obcClassName="com.liferay.bookmarks.util.comparator.EntryURLComparator"
+		/>
+		
+In the example, the results are sorted by URL. But you can sort it by name, date, etc., with the proper comparator. This is an optional property, so you can omit it. Be careful because `obcClassName` is different in 6.2 and 7.0 version. Also, if there isn't the comparator you want, you can create it yourself.
+
 ## Using the Screenlet [](id=using-the-screenlet)
 
 You can now use your new Screenlet 
