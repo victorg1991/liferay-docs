@@ -484,7 +484,13 @@ Override these methods now:
 Awesome! You're done! Your list Screenlet, like any other Screenlet, is a 
 ready-to-use component that you can add to your storyboard. You can even
 [package it](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes#publish-your-themes-using-cocoapods)
-to contribute to the Liferay Screens project, or distribute it with CocoaPods. 
+to contribute to the Liferay Screens project, or distribute it with CocoaPods.
+
+## Sorted List by Comparator [](id=list-sorted-comparator)
+
+As you can see in your list screenlet properties, you can add an `obcClassName`. With this parameter you can set an `OrderByComparator`. This class allows to sort the results. If you want to set this comparator, you must add the full className in your `@IBInspectable` property named `obcClassName`.
+
+For example, if you want to sort the results by URL, you must set `obcClassName` to `"com.liferay.bookmarks.util.comparator.EntryURLComparator"`. But you can sort it by name, date, etc., with the proper comparator. This is an optional property, so you can omit it. Be careful because `obcClassName` is different in 6.2 and 7.0 version. Also, if there isn't the comparator you want, you can create it yourself.
 
 ## Related Topics [](id=related-topics)
 
