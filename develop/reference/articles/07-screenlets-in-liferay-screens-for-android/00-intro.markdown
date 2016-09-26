@@ -44,3 +44,10 @@ reference documents:
 - [**Web Content List Screenlet:**](/develop/reference/-/knowledge_base/7-0/web-content-list-screenlet-for-android) 
   Shows a list of web contents from a folder, usually based on a pre-existing 
   `DDMStructure`.
+- [**Gallery Screenlet:**](/develop/reference/-/knowledge_base/7-0/gallery-screenlet-for-android) 
+  Shows a list of images from a folder. This screenlet also allows to upload and delete images.
+- [**Rating Screenlet:**](/develop/reference/-/knowledge_base/7-0/rating-screenlet-for-android) Shows the rating for an `Asset`. Also allows to update or delete the rating by the user and comes with different views: thumbs, stars, like, emojis...
+- [**Comment List Screenlet:**](/develop/reference/-/knowledge_base/7-0/comment-list-screenlet-for-android) Shows a list of comments for an `Asset`.
+- [**Comment Display Screenlet:**](/develop/reference/-/knowledge_base/7-0/comment-display-screenlet-for-android) Shows a single comment for an `Asset`.
+- [**Comment Add Screenlet:**](/develop/reference/-/knowledge_base/7-0/comment-add-screenlet-for-android) Allows to add one comment to an `Asset`.
+- [**Asset Display Screenlet:**](/develop/reference/-/knowledge_base/7-0/asset-display-screenlet-for-android) Displays correctly an `Asset`. Nowadays, it supports `DLFileEntry`, `BlogsEntry` and `WebContent`. Also you can render a custom `Asset`.
