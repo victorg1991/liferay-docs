@@ -68,7 +68,7 @@ Create a new XIB file and construct your Screenlet's UI with Interface Builder. 
 
 Almost each *action* received by the Screenlet has to be triggered from the view. In order to achieve that, make sure to use a `restorationIdentifier` property to assign an unique ID to each UI component that triggers an action. That ID will be the action name that we recover in the Screenlet class. That action will be triggered "automagically" once an user interacts with the component. If the action only needs to change the UI's state (that is, change the component's properties), then you can associate that component's event to an `IBAction` method as usual. Actions using `restorationIdentifier` are intended for use by actions that need an Interactor (such as actions that make server requests or retrieve data from a database). 
 
-For example, the Add Bookmark Screenlet's XIB file [`AddBookmarkView_default.xib`](https://github.com/liferay/liferay-screens/blob/develop/ios/Samples/Bookmark/AddBookmarkBasicScreenlet/View/AddBookmarkBasicView_default.xib) specifies text box fields for a bookmark's URL and title and a button (with `restorationIdentifier="add-bookmark"`) to save the bookmark. 
+For example, the Add Bookmark Screenlet's XIB file [`AddBookmarkView_default.xib`](https://github.com/liferay/liferay-screens/tree/master/ios/Samples/Bookmark/AddBookmarkScreenlet/Basic/Themes/AddBookmarkView_default.xib) specifies text box fields for a bookmark's URL and title and a button (with `restorationIdentifier="add-bookmark"`) to save the bookmark. 
 
 ![Figure 1: Here's the sample Add Bookmark Screenlet's XIB file rendered in Interface Builder.](../../../images/screens-ios-xcode-add-bookmark.png)
 
@@ -76,7 +76,7 @@ Create a new View class that extends from [`BaseScreenletView`](https://github.c
 
 Implement getters and setters to get and set values from the UI components. Also make sure to implement any required animations or front-end logic. 
 
-For example, the sample Screenlet's [`AddBookmarkView_default`](https://github.com/liferay/liferay-screens/blob/develop/ios/Samples/Bookmark/AddBookmarkBasicScreenlet/View/AddBookmarkBasicView_default.swift) keeps references to the UI components and implements getters for them, in order to be able to recover the user data from the Screenlet.
+For example, the sample Screenlet's [`AddBookmarkView_default`](https://github.com/liferay/liferay-screens/tree/master/ios/Samples/Bookmark/AddBookmarkScreenlet/Basic/Themes/AddBookmarkView_default.swift) keeps references to the UI components and implements getters for them, in order to be able to recover the user data from the Screenlet.
 
     import UIKit
     import LiferayScreens
@@ -114,7 +114,7 @@ Interactors work synchronously, but, you can use Callbacks (delegates) or Connec
 - You can save a response to a property and make its value accessible. 
 - You must invoke methods `callOnSuccess` or `callOnFailure` to execute closures `onSuccess` or `onFailure`, respectively. 
 
-The sample Add Bookmark Screenlet's Interactor class `AddBookmarkInteractor` adds a bookmark to the Liferay instance:
+The sample Add Bookmark Screenlet's Interactor class [`AddBookmarkInteractor`](https://github.com/liferay/liferay-screens/tree/master/ios/Samples/Bookmark/AddBookmarkScreenlet/Basic/Interactor/AddBookmarkInteractor.swift) adds a bookmark to the Liferay instance:
 
     import UIKit
     import LiferayScreens
@@ -210,7 +210,7 @@ As an example, the `createInteractor` method of the Add Bookmark Screenlet class
 	}
 
 
-For reference, the sample Add Bookmark Screenlet's final code is on [GitHub](https://github.com/liferay/liferay-screens/tree/develop/ios/Samples/Bookmark/AddBookmarkBasicScreenlet). 
+For reference, the sample Add Bookmark Screenlet's final code is on [GitHub](https://github.com/liferay/liferay-screens/tree/master/ios/Samples/Bookmark/AddBookmarkScreenlet/Basic/AddBookmarkScreenlet.swift). 
 
 You're done! Your Screenlet is a ready-to-use component that you can add to your storyboard. You can even [package](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes#publish-your-themes-using-cocoapods) it to contribute to the Screens project or distribute with CocoaPods. Now you know how to create Screenlets for iOS.
 
