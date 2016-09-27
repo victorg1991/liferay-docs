@@ -100,12 +100,15 @@ connection.
 |-----------|-----------|-------------| 
 | `layoutId` | `@layout` | The layout to use to show the View.|
 | `autoLoad` | `boolean` | Whether the list should be loaded when it's presented on the screen. The default value is `true`. |
+| `groupId` | `number` | The asset's group (site) ID. If this value is `0`, the `groupId` specified in `LiferayServerContext` is used. The default value is `0 `. |
+| `cachePolicy` | `string` | Offline mode type. See [Offline](#offline) section. |
+| `portletItemName` | `string` | The archive name you used in the Asset Publisher. To use this feature, add an Asset Publisher to one of your site's pages (it may be a hidden page), configure the Asset Publisher filter (Asset Selection on configuration page), and then use the *Archive Setup* option to save this configuration with a name. Use this name in this attribute. |
+| `classNameId` | `number` | The asset class name's ID. Use values from the portal's `classname_` database table. |
 | `firstPageSize` | `number` | The number of items to retrieve from the server for display on the list's first page. The default value is `50`. |
 | `pageSize` | `number` | The number of items to retrieve from the server for display on the second and subsequent pages. The default value is `25`. |
-| `groupId` | `number` | The asset's group (site) ID. If this value is `0`, the `groupId` specified in `LiferayServerContext` is used. The default value is `0 `. |
-| `classNameId` | `number` | The asset class name's ID. Use values from the portal's `classname_` database table. |
-| `customEntryQuery` | `HashMap` | The set of keys (string) and values (string or number) to be used in the [AssetEntryQuery object](https://docs.liferay.com/portal/6.2/javadocs/com/liferay/portlet/asset/service/persistence/AssetEntryQuery.html). These values filter the assets returned by the portal. |
-| `portletItemName` | `string` | The archive name you used in the Asset Publisher. To use this feature, add an Asset Publisher to one of your site's pages (it may be a hidden page), configure the Asset Publisher filter (Asset Selection on configuration page), and then use the *Archive Setup* option to save this configuration with a name. Use this name in this attribute. |
+| `labelFields` | `string` | The comma-separated names of the DDL fields to show. Refer to the list's data definition to find the field names. For more information on this, see [Creating Data Definitions](/discover/portal/-/knowledge_base/7-0/creating-data-definitions). Note that the appearance of these values in your app depends on the `layoutId` set. |
+| `customEntryQuery` | `HashMap` | The set of keys (string) and values (string or number) to be used in the [AssetEntryQuery object](https://docs.liferay.com/portal/6.2/javadocs/com/liferay/portlet/asset/service/persistence/AssetEntryQuery.html). These values filter the assets returned by the portal. | 
+| `obcClassName` | `string` | The `OrderByComparator` class name to sort the results. If you don't want to sort the results, you can omit this property. See [AssetList comparators](https://github.com/liferay/liferay-portal/tree/master/portal-impl/src/com/liferay/portlet/asset/util/comparator). You can only use classes that extend `OrderByComparator<AssetEntry>`. |
 
 ## Methods [](id=methods)
 
@@ -115,16 +118,15 @@ connection.
 
 ## Listener [](id=listener)
 
-The `AssetListScreenlet` delegates some events to an object that implements the 
-`AssetListListener` interface. This interface extends from `BaseListListener` 
-and lets you implement the following methods:
+The `AssetListScreenlet` delegates some events to an object or a class that implements `BaseListListener` and lets you implement the following methods: 
 
-- `onListPageReceived(BaseListScreenlet source, int page, List<AssetEntry> entries, int rowCount)`: 
-  Called when a page of assets is received. Note that this method may be called 
-  more than once; once for each page received. 
+- `onListPageFailed(int startRow, Exception e)`: Called 
+  when an error occurs in the process.
+  
+- `onListPageReceived(int startRow, int endRow, 
+  List<Record> records, int rowCount)`: Called when a page of records is 
+  received. Note that this method may be called more than once; once for each 
+  page received.
 
-- `onListPageFailed(BaseListScreenlet source, int page, Exception e)`: Called 
-  when an error occurs in the process. 
-
-- `onListItemSelected(BaseListScreenlet source, AssetEntry entry)`: Called when 
-  an item in the list is selected. 
+- `onListItemSelected(Record records, View view)`: Called when an 
+  item in the list is selected.
