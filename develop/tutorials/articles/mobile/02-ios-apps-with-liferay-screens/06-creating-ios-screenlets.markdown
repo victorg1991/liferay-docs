@@ -8,7 +8,7 @@ What if, however, there's no Screenlet for *your* use case? No problem! You can
 create your own. Extensibility is a key strength of Liferay Screens. 
 
 This tutorial explains how to create your own Screenlets. As an example, it
-references code from the sample
+references code from the sample 
 [Add Bookmark Screenlet](https://github.com/liferay/liferay-screens/tree/master/ios/Samples/Bookmark), 
 that saves bookmarks to Liferay's Bookmarks portlet.
 
@@ -18,7 +18,11 @@ analyze the
 of Liferay Screens for iOS. Without further ado, let the Screenlet creation
 begin! 
 
-## Determining Your Screenlet's Location [](id=determining-your-screenlets-location)
+## Planning Your Screenlet
+
+Before creating your Screenlet, you must determine what it needs to do and how 
+you want developers to use it. This determines where you'll create your 
+Screenlet and its functionality. 
 
 Where you should create your Screenlet depends on how you plan to use it. If you
 want to reuse or redistribute it, you should create it in an empty Cocoa Touch
@@ -30,27 +34,58 @@ in the tutorial
 explains how to publish an iOS Screenlet. Even though that section refers to
 Themes, the steps for preparing Screenlets for publishing are the same. If you
 don't plan to reuse or redistribute your Screenlet, create it in your app's
-Xcode project.
+Xcode project. 
 
-## Analyzing Your Screenlet's use cases [](id=analyzing-your-screenlets-use-cases)
+You must also determine your Screenlet's functionality, and what data your 
+Screenlet requires. This determines the actions your Screenlet must support and 
+the Liferay remote services it must call. For example, Add Bookmark Screenlet 
+only needs to respond to one action: adding a bookmark to Liferay's Bookmarks 
+portlet. To add a bookmark, this Screenlet must call the Liferay instance's 
+`add-entry` service for `BookmarksEntry`. If you're running a Liferay instance 
+locally on port 8080, 
+[click here](http://localhost:8080/api/jsonws?contextName=bookmarks&signature=%2Fbookmarks.bookmarksentry%2Fadd-entry-6-groupId-folderId-name-url-description-serviceContext) 
+to see this service. To add a bookmark, this service requires the following 
+parameters: 
 
-The first step when creating a Screenlet is asking ourselves: What should my Screenlet do?
+- `groupId`: The ID of the site in the Liferay instance that contains the 
+  Bookmarks portlet. 
 
-In this case, the answer is simple, our screenlet should add bookmark entries to a folder in our Liferay Portal. With that in mind, we can draw the following conclusions:
+- `folderId`: The ID of the Bookmarks portlet folder that receives the new 
+  bookmark. 
 
--  Our Screenlet will have to respond only to one **action**: add a bookmark.
--  If you take a look at the service used to add a bookmark, you'll see that the Screenlet needs, at least, the following **parameters**: on one hand, the id of the bookmark folder and the group id, which the user won't know. On the other hand, the name and url of the bookmark, which will have to be provided by the user.
+- `name`: The new bookmark's title. 
 
-## Creating the Screenlet [](id=creating-the-screenlet)
+- `url`: The new bookmark's URL. 
 
-The creation of a Screenlet is an easy process and can be done in the following steps.
+- `description`: The new bookmark's description. 
 
-### Creating the Screenlet class
-In Xcode, create a Screenlet class that extends
-    [`BaseScreenlet`](https://github.com/liferay/liferay-screens/blob/master/ios/Framework/Core/Base/BaseScreenlet.swift) and include, optionally, any `@IBInspectable` properties you need. The name of this class should follow the [Naming Convention](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#ios-naming-convention) specified in the [Best Practices](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
+- `serviceContext`: A Liferay `ServiceContext` object. 
 
-For example, let's create the class `AddBookmarkScreenlet`. In the previous [chapter](#analyzing-your-screenlets-use-cases) we conclude that the Screenlet will need the groupId and the bookmark folderId. The first one can be obtained from the file created in the section [Configuring Communication with Liferay](/develop/tutorials/-/knowledge_base/7-0/preparing-ios-projects-for-liferay-screens#configuring-communication-with-liferay) of the tutorial [Preparing iOS Projects for Liferay Screens](/develop/tutorials/-/knowledge_base/7-0/preparing-ios-projects-for-liferay-screens). For the second one we will create a `folderId` property in the Screenlet which can be declared as `@IBInspectable` to facilitate the testing of the Screenlet.
-    
+Add Bookmark Screenlet must therefore account for each of these parameters. When 
+saving a bookmark, the Screenlet asks the user to enter the bookmark's URL and 
+name. The user isn't required, however, to enter any other parameters. This is 
+because the app developer sets the `groupId` and `folderId` via the app's code. 
+Also, the Screenlet's code automatically populates the `description` and 
+`serviceContext`. 
+
+Great! Now you're ready to create your Screenlet! 
+
+## Creating the Screenlet Class
+
+In Xcode, create your Screenlet class by extending the 
+[Liferay Screens `BaseScreenlet` class](https://github.com/liferay/liferay-screens/blob/master/ios/Framework/Core/Base/BaseScreenlet.swift). 
+You should name your Screenlet class according to the 
+[naming conventions](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#ios-naming-convention) 
+specified in the 
+[iOS best practices tutorial](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices). 
+Your Screenlet class should also contain any `@IBInspectable` properties you 
+need. 
+
+For example, the Screenlet class in Add Bookmark Screenlet is 
+`AddBookmarkScreenlet`. This class extends `BaseScreenlet` and contains an 
+`@IBInspectable` variable for the `folderId`: 
+
+
     import UIKit
     import LiferayScreens
     
