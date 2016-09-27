@@ -53,12 +53,14 @@ connection.
 
 | Attribute | Data type | Explanation |
 |-----------|-----------|-------------| 
+| `groupId` | `number` | The ID of the site (group) where the web content exists. If set to `0`, the `groupId` specified in `LiferayServerContext` is used. The default value is `0`. |
+| `folderId` | `number` | The ID of the web content folder. If set to `0`, the root folder is used. The default value is `0`. |
+| `offlinePolicy` | `string` | Offline mode type. See [Offline](#offline) section. The default value is *remote-first*. |
 | `autoLoad` | `boolean` | Whether the list should automatically load when the Screenlet appears in the app's UI. The default value is `true`. |
 | `refreshControl` | `boolean` | Whether a standard [`UIRefreshControl`](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIRefreshControl_class/) is shown when the user does the pull to refresh gesture. The default value is `true`. |
 | `firstPageSize` | `number` | The number of items to display on the first page. The default value is `50`. |
 | `pageSize` | `number` | The number of items to display on second and subsequent pages. The default value is `25`. |
-| `groupId` | `number` | The ID of the site (group) where the web content exists. If set to `0`, the `groupId` specified in `LiferayServerContext` is used. The default value is `0`. |
-| `folderId` | `number` | The ID of the web content folder. If set to `0`, the root folder is used. The default value is `0`. |
+| `obcClassName` | `string` | The `OrderByComparator` class name to sort the results. If you don't want to sort the results, you can omit this property. See [WebContent comparators](https://github.com/liferay/liferay-portal/tree/master/modules/apps/web-experience/journal/journal-api/src/main/java/com/liferay/journal/util/comparator). You can only use classes that extend `OrderByComparator<JournalArticle>`. |
 
 ## Methods [](id=methods)
 
