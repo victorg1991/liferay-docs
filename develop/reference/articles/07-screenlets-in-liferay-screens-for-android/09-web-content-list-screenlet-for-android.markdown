@@ -56,10 +56,14 @@ connection.
 |-----------|-----------|-------------| 
 | `layoutId` | `@layout` | The ID of the layout to use to show the View. |
 | `autoLoad` | `boolean` | Whether the list loads automatically when the Screenlet appears in the app's UI. The default value is `true`. |
+| `folderId` | `number` | The ID of the folder to render. |
+| `groupId` | `number` | The ID of the site (group) where the asset is stored. If set to `0`, the `groupId` specified in `LiferayServerContext` is used. The default value is `0`. |
+| `cachePolicy` | `string` | Offline mode type. See [Offline](#offline) section. |
 | `firstPageSize` | `number` | The number of items to retrieve from the server for display on the first page. The default value is `50`. |
 | `pageSize` | `number` | The number of items to retrieve from the server for display on the second and subsequent pages. The default value is `25`. |
-| `folderId` | `number` | The ID of the folder to render. |
 | `labelFields` | `string` | The comma-separated names of the DDM fields to show. Refer to the list's data definition to find the field names. For more information on this, see [the article on structured web content](/discover/portal/-/knowledge_base/7-0/designing-uniform-content). Note that the appearance of data from a structure's fields depends on the `layoutId`. |
+| `obcClassName` | `string` | The `OrderByComparator` class name to sort the results. If you don't want to sort the results, you can omit this property. See [WebContent comparators](https://github.com/liferay/liferay-portal/tree/master/modules/apps/web-experience/journal/journal-api/src/main/java/com/liferay/journal/util/comparator). You can only use classes that extend `OrderByComparator<JournalArticle>`. |
+
 
 ## Methods [](id=methods)
 
@@ -68,17 +72,13 @@ connection.
 | `loadPage(pageNumber)` | `void` | Starts the request to load the specified page of records. The page is shown when the response is received. |
 
 ## Listener [](id=listener)
+The `WebContentListScreenlet` delegates some events to an object or a class that implements `BaseListListener` and lets you implement the following methods:
 
-Web Content List Screenlet delegates some events to an object that implements 
-the `WebContentListListener` interface. This interface extends from 
-`BaseListListener` and lets you implement the following methods: 
+- `onListPageFailed(int startRow, Exception e)`: Called 
+  when an error occurs in the process.
+  
+- `onListPageReceived(int startRow, int endRow, 
+  List<Record> records, int rowCount)`: Called when a page of web content is received. Note that this method may be called more than once: once for each page received. 
 
-- `onListPageReceived(BaseListScreenlet source, int page, List<WebContent> entries, int rowCount)`: 
-  Called when a page of web content is received. Note that this method may be 
-  called more than once: once for each page received. 
-
-- `onListPageFailed(BaseListScreenlet source, int page, Exception e)`: Called 
-  when an error occurs in the process. 
-
-- `onListItemSelected(BaseListScreenlet source, WebContent webContent)`: Called 
-  when an item in the list is selected. 
+- `onListItemSelected(Record records, View view)`: Called when an 
+  item in the list is selected.
