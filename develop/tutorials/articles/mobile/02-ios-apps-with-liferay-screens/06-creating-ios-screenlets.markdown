@@ -159,9 +159,9 @@ The sample Add Bookmark Screenlet's Interactor class [`AddBookmarkInteractor`](h
     	
     	public var resultBookmarkInfo: [String:AnyObject]?
     
-    	var folderId: Int64
-    	var title: String
-    	var url: String
+    	public let folderId: Int64
+    	public let title: String
+    	public let url: String
     
     
     	//MARK: Initializer
