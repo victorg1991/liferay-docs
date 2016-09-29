@@ -286,29 +286,28 @@ You should name your Screenlet class according to the
 specified in the 
 [iOS best practices tutorial](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices). 
 Your Screenlet class must also include any `@IBInspectable` properties your 
-Screenlet requires, a reference to your Screenlet's View class, and a 
-`createInteractor*` method for each action your Screenlet performs. Each 
-`createInteractor*` method should create an instance of that Interactor and then 
-call the Interactor's `onSuccess` and `onFailure` closures to define what 
-happens when the server call succeeds or fails, respectively. 
+Screenlet requires and a reference to your Screenlet's View class. To perform 
+your Screenlet's action, your Screenlet class must override `BaseScreenlet`'s 
+`createInteractor` method. This method should create an instance of your 
+Interactor and then set the Interactor's `onSuccess` and `onFailure` closures to 
+define what happens when the server call succeeds or fails, respectively. 
 
 For example, the 
 [`AddBookmarkScreenlet` class](https://github.com/liferay/liferay-screens/blob/master/ios/Samples/Bookmark/AddBookmarkScreenlet/Basic/AddBookmarkScreenlet.swift) 
 is the Screenlet class in Add Bookmark Screenlet. This class extends 
 `BaseScreenlet` and contains an `@IBInspectable` varaible for the bookmark 
-folder's ID (`folderId`). Since this Screenlet only needs one Interactor for 
-adding a bookmark, the Screenlet class only needs one `createInteractor` method. 
-This method first gets a reference to the View class 
-(`AddBookmarkView_default`). In then creates an `AddBookmarkInteractor` instance 
-with this Screenlet class (`self`), the `folderId`, the bookmark's title, and 
-the bookmark's URL. Note that the View class reference contains the bookmark 
-title and URL that the user entered into the UI. The `createInteractor` method 
-then calls the Interactor's `onSuccess` closure to print a success message when 
-the server call succeeds. Likewise, the Interactor's `onFailure` closure prints 
-an error message when the server call fails. Note that you're not restricted to 
-just printing messages here: you should use these closures to do whatever is 
-best for your Screenlet. The `createInteractor` method finishes by returning the 
-Interactor instance. Here's the complete `AddBookmarkScreenlet` class: 
+folder's ID (`folderId`). The `AddBookmarkScreenlet` class's `createInteractor` 
+method first gets a reference to the View class (`AddBookmarkView_default`). It 
+then creates an `AddBookmarkInteractor` instance with this Screenlet class 
+(`self`), the `folderId`, the bookmark's title, and the bookmark's URL. Note 
+that the View class reference contains the bookmark title and URL that the user 
+entered into the UI. The `createInteractor` method then sets the Interactor's 
+`onSuccess` closure to print a success message when the server call succeeds. 
+Likewise, the Interactor's `onFailure` closure is set to print an error message 
+when the server call fails. Note that you're not restricted to just printing 
+messages here: you should set these closures to do whatever is best for your 
+Screenlet. The `createInteractor` method finishes by returning the Interactor 
+instance. Here's the complete `AddBookmarkScreenlet` class: 
 
     import UIKit
     import LiferayScreens
@@ -346,17 +345,6 @@ Interactor instance. Here's the complete `AddBookmarkScreenlet` class:
         }
 
     }
-
-<!-- 
-The section on creating the View says this:
-
-"To achieve this, make sure to use a `restorationIdentifier` property to assign 
-a unique ID to each UI component that triggers an action. This ID is the action 
-name recovered in the Screenlet class."
-
-Where is this happening in the Screenlet class? I don't see any reference to the 
-restorationIdentifier in AddBookmarkScreenlet or BaseScreenlet.
--->
 
 For reference, the sample Add Bookmark Screenlet's final code is 
 [here on GitHub](https://github.com/liferay/liferay-screens/tree/master/ios/Samples/Bookmark/AddBookmarkScreenlet/Basic/AddBookmarkScreenlet.swift). 
