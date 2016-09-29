@@ -1,10 +1,10 @@
-# Web Content List Screenlet for iOS [](id=web-content-list-screenlet-for-ios)
+# Gallery Screenlet for iOS [](id=gallery-screenlet-for-ios)
 
 ## Requirements [](id=requirements)
 
 - Xcode 7.2
 - iOS 9 SDK
-- Liferay Portal 6.2 (CE or EE), Liferay 7.0 CE, Liferay DXP 
+- Liferay 7.0 CE, Liferay DXP 
 - Liferay Screens Compatibility Plugin 
   ([CE](http://www.liferay.com/marketplace/-/mp/application/54365664) or 
   [EE](http://www.liferay.com/marketplace/-/mp/application/54369726), 
@@ -13,29 +13,23 @@
 
 ## Compatibility [](id=compatibility)
 
-- iOS 7 and above
+- iOS 8 and above
 
 ## Features [](id=features)
 
-Web Content List Screenlet can show lists of 
-[web content](/discover/portal/-/knowledge_base/7-0/creating-web-content) 
-from a Liferay instance. It can show both basic and 
-[structured web content](/discover/portal/-/knowledge_base/7-0/designing-uniform-content). 
-The Screenlet also implements 
-[fluent pagination](http://www.iosnomad.com/blog/2014/4/21/fluent-pagination) 
-with configurable page size, and supports i18n in asset values. 
+Gallery Screenlet can show lists of images from a `folderId` from a Liferay instance. Also, you can upload and delete photos. The Screenlet also implements [fluent pagination](http://www.iosnomad.com/blog/2014/4/21/fluent-pagination) with configurable page size, and supports i18n in asset values. 
 
 ## Module [](id=module)
 
-- WebContent
+- None
 
 ## Themes [](id=themes)
 
-The Default Theme uses a standard `UITableView` to show the scrollable list. 
-Other Themes may use a different component, such as `UICollectionView` or 
-others, to show the contents. 
+The Default Theme uses a standard `UICollectionView` to show the scrollable list as grid. 
+Other Themes may use a different component, such as `UITableView` or 
+others, to show the contents.
 
-![Figure 1: Web Content List Screenlet using the Default (`default`) Theme.](../../images/screens-ios-webcontent-list.png)
+![Figure 1: Gallery Screenlet using the Default (`default`) Theme.](../../images/screens-ios-gallery.png)
 
 ## Offline [](id=offline)
 
@@ -52,15 +46,17 @@ connection.
 ## Attributes [](id=attributes)
 
 | Attribute | Data type | Explanation |
-|-----------|-----------|-------------| 
-| `groupId` | `number` | The ID of the site (group) where the web content exists. If set to `0`, the `groupId` specified in `LiferayServerContext` is used. The default value is `0`. |
-| `folderId` | `number` | The ID of the web content folder. If set to `0`, the root folder is used. The default value is `0`. |
-| `offlinePolicy` | `string` | Offline mode type. See [Offline](#offline) section. The default value is *remote-first*. |
+|-----------|-----------|-------------|
+| `repositoryId` | `number` | The ID of the site (group) where the image gallery exists. |
+| `folderId` | `number` | The ID of the image gallery folder to be displayed. |
+| `mimeTypes` | `string` | Comma separated mimeTypes that Gallery Screenlet supports. |
+| `filePrefix` | `string` | Prefix for the image title when we are in uploading process. |
+| `offlinePolicy` | `string` | Offline mode type. See [Offline](#offline) section. First, the screenlet takes *cache-first* but then, the default value is *remote-first*. |
 | `autoLoad` | `boolean` | Whether the list should automatically load when the Screenlet appears in the app's UI. The default value is `true`. |
 | `refreshControl` | `boolean` | Whether a standard [`UIRefreshControl`](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIRefreshControl_class/) is shown when the user does the pull to refresh gesture. The default value is `true`. |
 | `firstPageSize` | `number` | The number of items to display on the first page. The default value is `50`. |
 | `pageSize` | `number` | The number of items to display on second and subsequent pages. The default value is `25`. |
-| `obcClassName` | `string` | The `OrderByComparator` class name to sort the results. If you don't want to sort the results, you can omit this property. See [WebContent comparators](https://github.com/liferay/liferay-portal/tree/master/modules/apps/web-experience/journal/journal-api/src/main/java/com/liferay/journal/util/comparator). You can only use classes that extend `OrderByComparator<JournalArticle>`. |
+| `obcClassName` | `string` | The `OrderByComparator` class name to sort the results. If you don't want to sort the results, you can omit this property. See [ImageGallery comparators](https://github.com/liferay/liferay-portal/tree/master/portal-impl/src/com/liferay/portlet/documentlibrary/util/comparator). You can only use classes that extend `OrderByComparator<DLFileEntry>`. |
 
 ## Methods [](id=methods)
 
@@ -74,12 +70,27 @@ Web Content List Screenlet delegates some events to an object that conforms to
 the `WebContentListScreenletDelegate` protocol. This protocol lets you implement 
 the following methods: 
 
-- `- screenlet:onWebContentListResponse:`: Called when a page of contents is 
+- `- screenlet:onImageEntriesResponse:`: Called when a page of contents is 
   received. Note that this method may be called more than once: one call for 
   each page received.
 
-- `- screenlet:onWebContentListError:`: Called when an error occurs in the 
+- `- screenlet:onImageEntriesError:`: Called when an error occurs in the 
   process. The `NSError` object describes the error. 
 
-- `- screenlet:onWebContentSelected:`: Called when an item in the list is 
+- `- screenlet:onImageEntrySelected:`: Called when an item in the list is 
   selected.
+  
+- `- screenlet:onImageEntryDeleted:`: Called when an item in the list is 
+  deleted.
+
+- `- screenlet:onImageEntryDeleteError:`: Called when an error occurs in the deleted process. The `NSError` object describes the error.
+  
+- `- screenlet:onImageUploadStart:`: Called when an item is prepared to be upload.
+
+- `- screenlet:onImageUploadProgress:`: Called when an item is uploading.
+  
+- `- screenlet:onImageUploadError:`: Called when an error occurs in the uploaded process. The `NSError` object describes the error.
+
+- `- screenlet:onImageUploaded:`: Called when an item has finished uploading.
+  
+- `- screenlet:onImageUploadDetailViewCreated:`: Called when the detail upload view has to be created.

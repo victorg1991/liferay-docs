@@ -74,11 +74,13 @@ connection.
 |-----------|-----------|-------------| 
 | `layoutId` | `@layout` | The layout to use to show the View. |
 | `autoLoad` | `boolean` | Defines whether the list should be loaded when it's presented on the screen. The default value is `true`. |
-| `firstPageSize` | `number` | The number of items to retrieve from the server for display on the first page. The default value is `50`. |
-| `pageSize` | `number` | The number of items to retrieve from the server for display on the second and subsequent pages. The default value is `25`. |
 | `recordSetId` | `number` | The ID of the DDL being called. To find your DDLs' IDs, click *Admin* &rarr; *Content* from the Dockbar. Then click *Dynamic Data Lists* on the left. Each DDL's ID is in the ID column of the table. |
 | `userId` | `number` | The ID of the user to filter records on. Records aren't filtered if the `userId` is `0`. The default value is `0`. |
+| `cachePolicy` | `string` | Offline mode type. See [**Offline**](#offline) section. |
+| `firstPageSize` | `number` | The number of items to retrieve from the server for display on the first page. The default value is `50`. |
+| `pageSize` | `number` | The number of items to retrieve from the server for display on the second and subsequent pages. The default value is `25`. |
 | `labelFields` | `string` | The comma-separated names of the DDL fields to show. Refer to the list's data definition to find the field names. For more information on this, see [Creating Data Definitions](/discover/portal/-/knowledge_base/7-0/creating-data-definitions). Note that the appearance of these values in your app depends on the `layoutId` set. |
+| `obcClassName` | `string` | The `OrderByComparator` class name to sort the results. If you don't want to sort the results, you can omit this property. See [DDLList comparators](https://github.com/liferay/liferay-portal/tree/master/modules/apps/forms-and-workflow/dynamic-data-lists/dynamic-data-lists-api/src/main/java/com/liferay/dynamic/data/lists/util/comparator). You can only use classes that extend `OrderByComparator<DDLRecord>`. |
 
 ## Methods [](id=methods)
 
@@ -88,17 +90,15 @@ connection.
 
 ## Listener [](id=listener)
 
-The `DDLListScreenlet` delegates some events to an object that implements the 
-`DDLListListener` interface. This interface extends from `BaseListListener` and 
-lets you implement the following methods: 
+The `DDLListScreenlet` delegates some events to an object or a class that implements `BaseListListener` and lets you implement the following methods: 
 
-- `onListPageReceived(BaseListScreenlet source, int page, 
-  List<DDLEntry> entries, int rowCount)`: Called when a page of records is 
+- `onListPageFailed(int startRow, Exception e)`: Called 
+  when an error occurs in the process.
+  
+- `onListPageReceived(int startRow, int endRow, 
+  List<Record> records, int rowCount)`: Called when a page of records is 
   received. Note that this method may be called more than once; once for each 
   page received.
 
-- `onListPageFailed(BaseListScreenlet source, int page, Exception e)`: Called 
-  when an error occurs in the process.
-
-- `onListItemSelected(BaseListScreenlet source, DDLEntry entry)`: Called when an 
+- `onListItemSelected(Record records, View view)`: Called when an 
   item in the list is selected.

@@ -484,10 +484,96 @@ Override these methods now:
 Awesome! You're done! Your list Screenlet, like any other Screenlet, is a 
 ready-to-use component that you can add to your storyboard. You can even
 [package it](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes#publish-your-themes-using-cocoapods)
-to contribute to the Liferay Screens project, or distribute it with CocoaPods. 
+to contribute to the Liferay Screens project, or distribute it with CocoaPods.
+
+## Extra: Sorted List by Comparator [](id=list-sorted-comparator)
+
+As you can see in your list screenlet properties, you can add an `obcClassName`. With this parameter you can set an `OrderByComparator`. This class allows to sort the results. If you want to set this comparator, you must add the full className in your `@IBInspectable` property named `obcClassName`.
+
+For example, if you want to sort the results by URL, you must set `obcClassName` to `"com.liferay.bookmarks.util.comparator.EntryURLComparator"`. But you can sort it by name, date, etc., with the proper comparator. This is an optional property, so you can omit it. Be careful because `obcClassName` is different in 6.2 and 7.0 version. Also, if there isn't the comparator you want, you can create it yourself.
+
+For creating a new comparator, you must create a class that extends `OrderByComparator<E>`. This `E` has to be the object model that your list manages. After that, you have to override the methods you want for your sorted list. For example, `BookmarkListScreenlet` can use `EntryURLComparator`. This comparator class sort the results by URL:
+
+	public class EntryURLComparator extends OrderByComparator<BookmarksEntry> {
+
+		public static final String ORDER_BY_ASC = "BookmarksEntry.url ASC";
+	
+		public static final String ORDER_BY_DESC = "BookmarksEntry.url DESC";
+	
+		public static final String[] ORDER_BY_FIELDS = {"url"};
+	
+		public EntryURLComparator() {
+			this(false);
+		}
+	
+		public EntryURLComparator(boolean ascending) {
+			_ascending = ascending;
+		}
+	
+		@Override
+		public int compare(BookmarksEntry entry1, BookmarksEntry entry2) {
+			String url1 = StringUtil.toLowerCase(entry1.getUrl());
+			String url2 = StringUtil.toLowerCase(entry2.getUrl());
+	
+			int value = url1.compareTo(url2);
+	
+			if (_ascending) {
+				return value;
+			}
+			else {
+				return -value;
+			}
+		}
+	
+		@Override
+		public String getOrderBy() {
+			if (_ascending) {
+				return ORDER_BY_ASC;
+			}
+			else {
+				return ORDER_BY_DESC;
+			}
+		}
+	
+		@Override
+		public String[] getOrderByFields() {
+			return ORDER_BY_FIELDS;
+		}
+	
+		@Override
+		public boolean isAscending() {
+			return _ascending;
+		}
+	
+		private final boolean _ascending;
+
+	}
+	
+	
+## Extra: List with sections [](id=list-with-section)
+One common pattern in iOS list is split its elements between sections. You can achieve it in a very simple way. Linking with the previous example, imagine you want to group or bookmarks by host. An **important** thing to notice is that you have to order our content according to the sections you want to make, how we just explained in the previous part of the tutorial
+[previous part of the tutorial](#list-sorted-comparator) 
+ 
+In the first place you need to revisit our brand new `BookmarkListPageLoadInteractor` and add an extra method. This method is `func sectionForRowObject(object: AnyObject) -> String?`
+in this method, we need to return the section for the object argument, in our case we will return the host for the current bookmark url.
+
+The complete method will be like this:
+
+	public override func sectionForRowObject(object: AnyObject) -> String? {
+		guard let bookmark = object as? Bookmark else {
+			return nil
+		}
+
+		let host = NSURL(string: bookmark.url)?.host
+
+		return host
+	}
+	
+And that's all, from now you will see your list grouped by bookmark hosts.
+
+
 
 ## Related Topics [](id=related-topics)
-
 [Creating iOS Screenlets](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets)
 
 [Architecture of Liferay Screens for iOS](/develop/tutorials/-/knowledge_base/7-0/architecture-of-liferay-screens-for-ios)
