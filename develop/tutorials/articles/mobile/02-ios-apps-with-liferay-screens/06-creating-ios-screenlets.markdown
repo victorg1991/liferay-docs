@@ -207,9 +207,9 @@ adds a bookmark to the Liferay instance:
     	
     	public var resultBookmarkInfo: [String:AnyObject]?
     
-    	var folderId: Int64
-    	var title: String
-    	var url: String
+    	public let folderId: Int64
+    	public let title: String
+    	public let url: String
     
     
     	//MARK: Initializer
