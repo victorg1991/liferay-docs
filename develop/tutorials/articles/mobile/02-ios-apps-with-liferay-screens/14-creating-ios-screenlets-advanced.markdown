@@ -142,9 +142,9 @@ For example, if we want to add an action to our `AddBookmarkScreenlet` for retri
             
             //MARK: Initializer
             
-            public init(url: String) {
+            public init(screenlet: BaseScreenlet, url: String) {
                 self.url = url
-                super.init(screenlet: nil)
+                super.init(screenlet: screenlet)
             }
             
             override public func start() -> Bool {
@@ -218,7 +218,7 @@ For example, if we want to add an action to our `AddBookmarkScreenlet` for retri
         }
     
         private func createGetTitleInteractor() -> Interactor {
-            let interactor = GetWebTitleInteractor(url: viewModel.URL!)
+            let interactor = GetWebTitleInteractor(screenlet: self, url: viewModel.URL!)
     
             //Called when interactor finish succesfully
             interactor.onSuccess = {
@@ -377,24 +377,25 @@ That will cover the "add bookmark" action, but... ¿what about getting the title
     
     public class GetWebTitleInteractor: ServerReadConnectorInteractor {
     
-        public var resultTitle: String?
+        public let url: String?
     
-        var url: NSURL?
+        ///Resulted title from the webpage
+        public var resultTitle: String?
     
     
         //MARK: Initializer
     
-        public init(url: String) {
-            self.url = NSURL(string: url)
-            super.init(screenlet: nil)
+        public init(screenlet: BaseScreenlet, url: String) {
+            self.url = url
+            super.init(screenlet: screenlet)
         }
     
     
         //MARK: ServerConnectorInteractor
     
         public override func createConnector() -> ServerConnector? {
-            if let url = url {
-                return HttpConnector(url: url)
+            if let url = url, URL = NSURL(string: url) {
+                return HttpConnector(url: URL)
             }
     
             return nil
