@@ -469,3 +469,124 @@ And, finally update the `AddBookmarkInteractor` closures:
     }
 
 **Final tip:** the [`BaseScreenletDelegate`](https://github.com/liferay/liferay-screens/blob/develop/ios/Framework/Core/Base/BaseScreenlet.swift) has a method called `customInteractorForAction` that a developer can implement to provide an alternative Interactor for a certain action of your Screenlet.
+
+## Using Progress Presenters
+
+One of the most common features of an app that gets data from a server is to show some progress (or a loading view) to the end user.
+
+For iOS Screenlets this can be easily achieved by the use of [`ProgressPresenter`](https://github.com/liferay/liferay-screens/blob/master/ios/Framework/Core/Base/ProgressPresenter.swift). There are a two `ProgressPresenter` included in the Screens library:
+
+- [`MBProgressHUDPresenter`](https://github.com/liferay/liferay-screens/blob/master/ios/Framework/Core/Base/MBProgressHUDPresenter.swift): This presenter shows a message with a spinner in the middle of the screen.
+- [`NetworkActivityIndicatorPresenter`](https://github.com/liferay/liferay-screens/blob/master/ios/Framework/Core/Base/NetworkActivityIndicatorPresenter.swift): This shows the progress using the iOS `networkActivityIndicator`. This presenter doesn't support messages.
+
+### Using Progress Presenters
+
+If you want to use a different progress presenter in your Screenlet's View,  you only need to acomplish two steps:
+
+1. Override the `createProgressPresenter` method and return an instance of the desired `ProgressPresenter` in it.
+2. Override the `progressMessages` var and return the desired messages as its computed value. `progressMessages` are created in the form of a dictionary with the `actionName` as the key and a [`ProgressMessages`](https://github.com/liferay/liferay-screens/blob/master/ios/Framework/Core/Base/ProgressPresenter.swift) object as the value. This `ProgressMessages` its another dictionary with the progress type as the key and the actual message as the value. There are three types, depending on the moment of the interaction: `Working`, `Failure`, and `Success`.
+
+For example, in our `AddBookmarkScreenlet`, if you want to use the described `NetworkActivityIndicatorPresenter` you will need to override the above method and return an instance of `NetworkActivityIndicatorPresenter`:
+
+    override func createProgressPresenter() -> ProgressPresenter {
+        return NetworkActivityIndicatorPresenter()
+    }
+
+Altough this presenter doesn't support messages, we still need to override the `progressMessages` property. This is because the Screenlet checks the presence of a message when it has to tells the Presenter to show progress for an action. Then, you could use the `NoProgressMessage` constant for those action/moment combination that need to show the indicator:
+
+    override var progressMessages: [String : ProgressMessages] {
+        return [
+            AddBookmarkScreenlet.AddBookmarkAction : [.Working: NoProgressMessage],
+            AddBookmarkScreenlet.GetTitleAction : [.Working: NoProgressMessage],
+        ]
+    }
+
+On the other hand, if you just want to change the progress messages and stick with the default Presenter (or create a new one that uses messages) you could override the `progressMessages` property like this:
+
+    override var progressMessages: [String : ProgressMessages] {
+        return [
+            AddBookmarkScreenlet.AddBookmarkAction : [
+                .Working: "Saving bookmark...",
+                .Success: "Bookmark saved!",
+                .Failure: "An error occurred saving the bookmark"
+            ],
+            AddBookmarkScreenlet.GetTitleAction : [
+                .Working: "Getting site title...",
+                .Failure: "An error occurred retrieving the title"
+            ],
+        ]
+    }
+
+### Creating your own Progress Presenter
+
+Creating your own Progress Presenter is an easy step. In short, you just need a class consistent with the [`ProgressPresenter`](https://github.com/liferay/liferay-screens/blob/master/ios/Framework/Core/Base/ProgressPresenter.swift) protocol. 
+
+So, for example, imagine we want to change the Progress Presenter used by our `AddBookmarkScreenlet` so it behaves as the default one for the Add Bookmark action and performs another type of progress for the get-title one.
+
+First thing to do, would be create the `AddBookmarkProgressPresenter`, and extend it from the `MBProgressHUDPresenter` class:
+
+    import UIKit
+    import LiferayScreens
+    
+    public class AddBookmarkProgressPresenter: MBProgressHUDPresenter {
+    }
+
+We have decided that the progress for the get-title interaction would be hidding the get-title button, and showing an `UIActivityIndicatorView`. So, next step would be creating the view and linking the indicator with the swift class:
+
+![Figure 2: The updated Add Bookmark Screenlet's XIB file with the activity indicator view.](../../../images/screens-ios-xcode-add-bookmark-advanced-progress.png)
+
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView?
+
+Now, let's implement our Progress Presenter class. First, our presenter should receive the views it needs to work: the button and the activity indicator:
+
+    let button: UIButton?
+        
+    let activityIndicator: UIActivityIndicatorView?
+        
+    public init(button: UIButton?, activityIndicator: UIActivityIndicatorView?) {
+        self.button = button
+        self.activityIndicator = activityIndicator
+        super.init()
+    }
+
+Next override the `showHUDInView` and the `hideHUDFromView` methods. Both of them will have to change the views accordingly:
+
+    public override func showHUDInView(view: UIView, message: String?, forInteractor interactor: Interactor) {
+        guard interactor is GetWebTitleInteractor else {
+            return super.showHUDInView(view, message: message, forInteractor: interactor)
+        }
+        
+        button?.hidden = true
+        activityIndicator?.startAnimating()
+    }
+        
+    public override func hideHUDFromView(view: UIView?, message: String?, forInteractor interactor: Interactor, withError error: NSError?) {
+        guard interactor is GetWebTitleInteractor else {
+            return super.hideHUDFromView(view, message: message, forInteractor: interactor, withError: error)
+        }
+        
+        activityIndicator?.stopAnimating()
+        button?.hidden = false
+    }
+
+And finally, override the `createProgressPresenter` method in the Screenlet's view:
+
+    override func createProgressPresenter() -> ProgressPresenter {
+        return AddBookmarkProgressPresenter(button: getTitleButton, activityIndicator: activityIndicatorView)
+    }
+
+And now, your Screenlet can notify users of its progress!
+
+And this is it! Your screenlet is now more prepared than ever to be used (and reused) in a real environment. Now more than ever you should [package](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes#publish-your-themes-using-cocoapods) it to contribute to the Screens project or distribute with CocoaPods.
+
+## Related Topics [](id=related-topics)
+
+[Creating iOS Screenlets](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets)
+
+[Using Screenlets in iOS Apps](/develop/tutorials/-/knowledge_base/7-0/using-screenlets-in-ios-apps)
+
+[Architecture of Liferay Screens for iOS](/develop/tutorials/-/knowledge_base/7-0/architecture-of-liferay-screens-for-ios)
+
+[Creating iOS Themes](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes)
+
+[Creating Android Screenlets](/develop/tutorials/-/knowledge_base/7-0/creating-android-screenlets)
