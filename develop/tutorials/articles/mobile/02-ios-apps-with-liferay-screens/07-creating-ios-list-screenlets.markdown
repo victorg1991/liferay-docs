@@ -548,14 +548,21 @@ For creating a new comparator, you must create a class that extends `OrderByComp
 		private final boolean _ascending;
 
 	}
-	
-	
+
 ## Extra: List with sections [](id=list-with-section)
-One common pattern in iOS list is split its elements between sections. You can achieve it in a very simple way. Linking with the previous example, imagine you want to group or bookmarks by host. An **important** thing to notice is that you have to order our content according to the sections you want to make, how we just explained in the previous part of the tutorial
+
+One common pattern in iOS list is split its elements between sections. You can 
+achieve it in a very simple way. Linking with the previous example, imagine you 
+want to group or bookmarks by host. An **important** thing to notice is that you 
+have to order our content according to the sections you want to make, how we 
+just explained in the previous part of the tutorial
 [previous part of the tutorial](#list-sorted-comparator) 
- 
-In the first place you need to revisit our brand new `BookmarkListPageLoadInteractor` and add an extra method. This method is `func sectionForRowObject(object: AnyObject) -> String?`
-in this method, we need to return the section for the object argument, in our case we will return the host for the current bookmark url.
+
+In the first place you need to revisit our brand new 
+`BookmarkListPageLoadInteractor` and add an extra method. This method is 
+`func sectionForRowObject(object: AnyObject) -> String?`
+in this method, we need to return the section for the object argument, in our 
+case we will return the host for the current bookmark url.
 
 The complete method will be like this:
 
@@ -571,9 +578,8 @@ The complete method will be like this:
 	
 And that's all, from now you will see your list grouped by bookmark hosts.
 
-
-
 ## Related Topics [](id=related-topics)
+
 [Creating iOS Screenlets](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets)
 
 [Architecture of Liferay Screens for iOS](/develop/tutorials/-/knowledge_base/7-0/architecture-of-liferay-screens-for-ios)
