@@ -55,7 +55,7 @@ the Screenlet:
 
 | Attribute | Data type | Explanation |
 |-----------|-----------|-------------|
-| `repositoryId` | `number` | The ID of the site (group) where the image gallery exists. |
+| `repositoryId` | `number` | The ID of the Documents and Media repository containing the image gallery. |
 | `folderId` | `number` | The ID of the image gallery folder to be displayed. |
 | `cachePolicy` | `string` | The offline mode setting. See the [Offline section](/develop/reference/-/knowledge_base/7-0/gallery-screenlet-for-android#offline) for details. |
 | `firstPageSize` | `number` | The number of items to display on the first page. The default value is `50`. |
@@ -105,8 +105,7 @@ Therefore, Gallery Screenlet's listener methods are as follows:
 - `onImageUploadEnd(ImageEntry entry)`: Called when an item finishes uploading. 
 
 - `showUploadImageView(String actionName, String picturePath, int screenletId)`: 
-  Called when the detailed upload view has to be shown. 
-<!-- What is meant by "detailed upload view"? -->
+  Called when the View for uploading an image is displayed. 
 
-- `provideImageUploadDetailView()`: Called when the detailed upload view has to 
-  be created. 
+- `provideImageUploadDetailView()`: Called when the View for uploading an image 
+  is initialized. 
