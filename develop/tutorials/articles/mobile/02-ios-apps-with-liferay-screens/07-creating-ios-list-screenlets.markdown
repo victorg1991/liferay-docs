@@ -1,11 +1,15 @@
 # Creating iOS List Screenlets [](id=creating-ios-list-screenlets)
 
 It's very common for mobile apps to display lists of entities. Liferay Screens 
-lets you display asset lists and DDL lists in your iOS app by using 
-[Asset List Screenlet](/develop/reference/-/knowledge_base/7-0/assetlistscreenlet-for-ios) 
-and 
-[DDL List Screenlet](/develop/reference/-/knowledge_base/7-0/ddllistscreenlet-for-ios), 
-respectively. For your app to display a list of other entities from a Liferay 
+lets you display the following lists:
+
+- Asset lists: [Asset List Screenlet](/develop/reference/-/knowledge_base/7-0/assetlistscreenlet-for-ios) 
+- DDL lists: [DDL List Screenlet](/develop/reference/-/knowledge_base/7-0/ddllistscreenlet-for-ios)
+- Comment lists: [Comment List Screenlet](/develop/reference/-/knowledge_base/7-0/comment-list-screenlet-for-ios)
+- Web Content lists: [Web Content List Screenelt](/develop/reference/-/knowledge_base/7-0/web-content-list-screenlet-for-ios)
+- Gallery: [Image Gallery Screenlet](/develop/reference/-/knowledge_base/7-0/gallery-screenlet-for-ios)
+
+For your app to display a list of other entities from a Liferay 
 instance, however, you must create your own list Screenlet. You can create this 
 Screenlet to display standard Liferay entities such as `User`, or custom 
 entities that belong to custom Liferay plugins. 
