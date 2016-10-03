@@ -66,3 +66,8 @@ reference documents:
   Displays an asset. Currently, this Screenlet can display `DLFileEntry` 
   (document library files), `BlogsEntry` (blogs articles), and `WebContent` (web 
   content articles). You can also use it to display custom assets. 
+  
+- [**Base File Display Screenlet:**](/develop/reference/-/knowledge_base/7-0/base-file-display-screenlet-for-android) 
+  Displays a `DLFileEntry` object. This screenlet cannot be used alone, but rather, it's the superclass for [`ImageDisplayScreenlet`](https://github.com/liferay/liferay-screens/blob/feature/master/android/library/src/main/java/com/liferay/mobile/screens/dlfile/display/image/ImageDisplayScreenlet.java), [`VideoDisplayScreenlet`](https://github.com/liferay/liferay-screens/blob/feature/master/android/library/src/main/java/com/liferay/mobile/screens/dlfile/display/video/VideoDisplayScreenlet.java), [`AudioDisplayScreenlet`](https://github.com/liferay/liferay-screens/blob/feature/master/android/library/src/main/java/com/liferay/mobile/screens/dlfile/display/audio/AudioDisplayScreenlet.java) and [`PdfDisplayScreenlet`](https://github.com/liferay/liferay-screens/blob/feature/master/android/library/src/main/java/com/liferay/mobile/screens/dlfile/display/pdf/PdfDisplayScreenlet.java).
+  
+- [**Blogs Entry Display Screenlet:**](/develop/reference/-/knowledge_base/7-0/blogs-entry-display-screenlet-for-android) Shows a single blog entry.
