@@ -788,6 +788,47 @@ You can now use your new Screenlet
     See the full example of this 
     [here in GitHub](https://github.com/liferay/liferay-screens/blob/master/android/samples/test-app/src/main/java/com/liferay/mobile/screens/testapp/ListBookmarksActivity.java). 
 
+## Appendix: Sorting Your List
+
+If you want to sort your list Screenlet's list, you must use a *comparator 
+class* in your Liferay instance. A comparator class implements the logic 
+required to sort your entities. You can create your own comparator 
+class, or use ones that already exist in Liferay. 
+
+To create a new comparator, you must create a class that extends Liferay's 
+[`OrderByComparator` class](https://docs.liferay.com/portal/7.0/javadocs/portal-kernel/com/liferay/portal/kernel/util/OrderByComparator.html) 
+with your entity as a type argument. Then you must override the methods required 
+to implement the sort. For example, Liferay's 
+[`EntryURLComparator` class](https://github.com/liferay/liferay-portal/blob/7.0.x/modules/apps/collaboration/bookmarks/bookmarks-api/src/main/java/com/liferay/bookmarks/util/comparator/EntryURLComparator.java) 
+sorts bookmarks in the Bookmarks app by URL. 
+
+Interactor classes in list Screenlets contain a `getPageRowsRequest` method that 
+has a parameter named query. You can use this this parameter to set the 
+comparator class to use. To use the comparator, you must set the `obcClassName` 
+property in your Screenlet's XML to the comparator's fully qualified class name. 
+
+For example, the following Screenlet XML shows Bookmark List Screenlet with its 
+`obcClassName` property set to 
+`com.liferay.bookmarks.util.comparator.EntryURLComparator`. This sets 
+`EntryURLComparator` as the Screenlet's comparator class: 
+<!-- 
+Do you have to do anything in the getPageRowsRequest method for this to work? 
+If so, an example should be included here. 
+-->
+
+	<com.liferay.mobile.screens.listbookmark.BookmarkListScreenlet
+		android:id="@+id/bookmarklist_screenlet"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:cachePolicy="REMOTE_FIRST"
+		app:folderId="@string/liferay_bookmark_folder"
+		app:layoutId="@layout/list_bookmarks"
+		app:obcClassName="com.liferay.bookmarks.util.comparator.EntryURLComparator"
+		/>
+
+Be careful because `obcClassName` is different in 6.2 and 7.0 version. 
+<!-- How is this property different between 6.2 and 7.0? -->
+
 ## Related Topics [](id=related-topics)
 
 [Creating Android Screenlets](/develop/tutorials/-/knowledge_base/7-0/creating-android-screenlets)
