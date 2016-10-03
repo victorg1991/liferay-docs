@@ -56,11 +56,11 @@ connection.
 | `mimeTypes` | `string` | The comma-separated list of MIME types for the Screenlet to support. |
 | `filePrefix` | `string` | The prefix to use on image titles when uploading images. |
 | `offlinePolicy` | `string` | The offline mode setting. First, the Screenlet takes `cache-first` but then, the default value is `remote-first`. See the [Offline section](/develop/reference/-/knowledge_base/7-0/gallery-screenlet-for-ios#offline) for details. |
-| `autoLoad` | `boolean` | Whether the list should automatically load when the Screenlet appears in the app's UI. The default value is `true`. |
-| `refreshControl` | `boolean` | Whether a standard [`UIRefreshControl`](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIRefreshControl_class/) is shown when the user does the pull to refresh gesture. The default value is `true`. |
+| `autoLoad` | `boolean` | Whether the list loads automatically when the Screenlet appears in the app's UI. The default value is `true`. |
+| `refreshControl` | `boolean` | Whether a standard [iOS `UIRefreshControl`](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIRefreshControl_class/) appears when the user does the pull to refresh gesture. The default value is `true`. |
 | `firstPageSize` | `number` | The number of items to display on the first page. The default value is `50`. |
-| `pageSize` | `number` | The number of items to display on second and subsequent pages. The default value is `25`. |
-| `obcClassName` | `string` | The `OrderByComparator` class name to sort the results. If you don't want to sort the results, you can omit this property. See [ImageGallery comparators](https://github.com/liferay/liferay-portal/tree/master/portal-impl/src/com/liferay/portlet/documentlibrary/util/comparator). You can only use classes that extend `OrderByComparator<DLFileEntry>`. |
+| `pageSize` | `number` | The number of items to display on the second and subsequent pages. The default value is `25`. |
+| `obcClassName` | `string` | The name of the `OrderByComparator` class to use to sort the results. Omit this property if you don't want to sort the results. Note that you can only use comparator classes that extend `OrderByComparator<DLFileEntry>`. Liferay contains no such comparator classes. You must therefore create your own by extending `OrderByComparator<DLFileEntry>`. To see examples of some comparator classes that extend other Document Library classes, [click here](https://github.com/liferay/liferay-portal/tree/master/portal-impl/src/com/liferay/portlet/documentlibrary/util/comparator). Note, however, that these classes can't be used with `obcClassName` because they don't extend `OrderByComparator<DLFileEntry>`. |
 
 ## Methods [](id=methods)
 
