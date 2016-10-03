@@ -1,4 +1,4 @@
-# Gallery Screenlet for Android
+# Image Gallery Screenlet for Android
 
 ## Requirements [](id=requirements)
 
@@ -16,8 +16,8 @@
 
 ## Features [](id=features)
 
-Gallery Screenlet shows a list of images from a Documents and Media folder in a 
-Liferay instance. You can also use Gallery Screenlet to upload images to and 
+Image Gallery Screenlet shows a list of images from a Documents and Media folder in a 
+Liferay instance. You can also use Image Gallery Screenlet to upload images to and 
 delete images from the same folder. The Screenlet implements fluent pagination 
 with configurable page size, and supports i18n in asset values. 
 
@@ -31,11 +31,11 @@ The Default Views use a standard Android `RecyclerView` to show the scrollable
 list. Other Views may use a different component, such as `ViewPager` or others, 
 to show the items. 
 
-![Figure 1: Gallery Screenlet using the Default (`default`) Views.](../../images/screens-android-gallery.png)
+![Figure 1: Image Gallery Screenlet using the Default (`default`) Views.](../../images/screens-android-gallery.png)
 
 ## Offline [](id=offline)
 
-Gallery Screenlet supports offline mode so it can function without a network 
+Image Gallery Screenlet supports offline mode so it can function without a network 
 connection. This table shows the offline policy settings that can be used with 
 the Screenlet: 
 
@@ -73,11 +73,11 @@ the Screenlet:
 
 ## Listener [](id=listener)
 
-Gallery Screenlet delegates some events to an object or class that implements 
-[its `GalleryListener` interface](https://github.com/liferay/liferay-screens/blob/master/android/library/src/main/java/com/liferay/mobile/screens/gallery/GalleryListener.java). 
+Image Gallery Screenlet delegates some events to an object or class that implements 
+[its `GalleryListener` interface](https://github.com/liferay/liferay-screens/blob/master/android/library/src/main/java/com/liferay/mobile/screens/imagegallery/ImageGalleryListener.java). 
 This interface extends 
 [the `BaseListListener` interface](https://github.com/liferay/liferay-screens/blob/master/android/library/src/main/java/com/liferay/mobile/screens/base/list/BaseListListener.java). 
-Therefore, Gallery Screenlet's listener methods are as follows: 
+Therefore, Image Gallery Screenlet's listener methods are as follows: 
 
 - `onListPageFailed(int startRow, Exception e)`: Called when the server call to 
   retrieve a page of items fails. This method's arguments include the 

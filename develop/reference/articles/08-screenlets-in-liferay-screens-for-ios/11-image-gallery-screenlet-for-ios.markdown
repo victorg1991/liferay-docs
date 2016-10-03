@@ -1,4 +1,4 @@
-# Gallery Screenlet for iOS [](id=gallery-screenlet-for-ios)
+# Image Gallery Screenlet for iOS [](id=image-gallery-screenlet-for-ios)
 
 ## Requirements [](id=requirements)
 
@@ -17,8 +17,8 @@
 
 ## Features [](id=features)
 
-Gallery Screenlet shows a list of images from a Documents and Media folder in a 
-Liferay instance. You can also use Gallery Screenlet to upload images to and 
+Image Gallery Screenlet shows a list of images from a Documents and Media folder in a 
+Liferay instance. You can also use Image Gallery Screenlet to upload images to and 
 delete images from the same folder. The Screenlet implements 
 [fluent pagination](http://www.iosnomad.com/blog/2014/4/21/fluent-pagination) 
 with configurable page size, and supports i18n in asset values. 
@@ -33,7 +33,7 @@ The Default Theme uses a standard iOS `UICollectionView` to show the scrollable
 list as a grid. Other Themes may use a different component, such as 
 `UITableView` or others, to show the contents. 
 
-![Figure 1: Gallery Screenlet using the Default (`default`) Theme.](../../images/screens-ios-gallery.png)
+![Figure 1: Image Gallery Screenlet using the Default (`default`) Theme.](../../images/screens-ios-gallery.png)
 
 ## Offline [](id=offline)
 
