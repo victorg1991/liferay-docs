@@ -22,24 +22,18 @@ Screenlet's code
 
 Note that this tutorial doesn't explain the general Screenlet concepts and 
 components in detail. Focus is instead placed on creating a Screenlet that 
-displays lists of entities. Before beginning, you should therefore read the 
-[Screens architecture tutorial](/develop/tutorials/-/knowledge_base/7-0/architecture-of-liferay-screens-for-ios), 
-and the general 
-[Screenlet creation tutorial](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets). 
+displays lists of entities. Before beginning, you should therefore perform both
+the [basic](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets) and [advance](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets-advanced) tutorials. 
 
 You'll create the list Screenlet by following these steps:
 
-1. Creating the Model Class.
+1. Creating the Screenlet's View.
 
-2. Creating the Screenlet's View.
+2. Creating the Screenlet's Connector.
 
-3. Creating the Screenlet's Connector.
+3. Creating the Screenlet's Interactor.
 
-4. Creating the Screenlet's Interactor.
-
-5. Creating the Screenlet's delegate.
-
-6. Creating the Screenlet class.
+4. Creating the Screenlet class.
 
 First though, you should understand how pagination works with list Screenlets. 
 
@@ -315,45 +309,7 @@ include these values. Override this method now:
         return "\(groupId)-\(folderId)"
     }
 
-Nice work! Next, you'll create your Screenlet's delegate so that app developers 
-can respond to events in your Screenlet. 
-
-## Creating the Delegate [](id=creating-the-delegate)
-
-For the app developer to respond to events in your Screenlet, you must create a 
-delegate protocol. This protocol must define the methods required to respond to 
-the Screenlet's events. You'll define the following three methods:
-
-- `screenlet(_:onBookmarkListResponse:)`: Returns the `Bookmark` results when 
-  the server call succeeds. 
-
-- `screenlet(_:onBookmarkListError:)`: Returns the `NSError` object when the 
-  server call fails. 
-
-- `screenlet(_:onBookmarkSelected:)`: Returns the `Bookmark` when a user selects 
-  it in the list. 
-
-Create this protocol now:
-
-    @objc public protocol BookmarkListScreenletDelegate : BaseScreenletDelegate {
-
-        optional func screenlet(screenlet: BookmarkListScreenlet,
-            onBookmarkListResponse bookmarks: [Bookmark])
-
-        optional func screenlet(screenlet: BookmarkListScreenlet,
-            onBookmarkListError error: NSError)
-
-        optional func screenlet(screenlet: BookmarkListScreenlet,
-            onBookmarkSelected bookmark: Bookmark)
-    }
-
-Note that these methods are optional. This means that the delegate class doesn't 
-have to implement them. Also note that in this Screenlet's example code in 
-GitHub, this protocol is defined in the same file 
-(`BookmarkListScreenlet.swift`) as the Screenlet class. You don't have to create 
-the protocol there--you can create it anywhere you like. 
-
-Next, you'll create the Screenlet class. 
+Nice work! Next, you'll create the Screenlet class. 
 
 ## Creating the Screenlet Class [](id=creating-the-screenlet-class)
 

@@ -434,7 +434,7 @@ To add a Screenlet delegate, follow this steps:
 3. Declare a property in our Screenlet's class of that protocol type, using the base `delegate` property.
 4. Invoke appropiate delegate methods in handling each Interactor’s closures. 
 
-Classes conforming to the delegate protocol and registered as delegates can respond to the delegated events.
+Classes conforming to the delegate protocol and registered as delegates can respond to the delegated events. Note that these methods are optional. This means that the delegate class doesn't have to implement them.
 
 **Note:** every Liferay Screenlet’s reference documentation, specifies its delegate protocols.
 
