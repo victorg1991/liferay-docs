@@ -109,26 +109,47 @@ Bookmarks portlet. The Screenlet's Connector class must therefore contain
 properties for the `groupId` (site ID) and `folderId` (Bookmarks folder ID), and 
 an initializer that sets them. Create this class now as follows:
 
+    import UIKit
+    import LiferayScreens
+    
+    
     public class BookmarkListPageLiferayConnector: PaginationLiferayConnector {
-
+    
         public let groupId: Int64
         public let folderId: Int64
-
+        
+        
+        //MARK: Initializer
+    
         public init(startRow: Int, endRow: Int, computeRowCount: Bool, groupId: Int64, folderId: Int64) {
             self.groupId = groupId
             self.folderId = folderId
-
+    
             super.init(startRow: startRow, endRow: endRow, computeRowCount: computeRowCount)
         }
+    
     }
 
-Next, you must override two methods in the Connector class: one to retrieve the 
+Next, override the `validateData` method and insert validations for each property that need it. Use the [`ValidationError`](https://github.com/liferay/liferay-screens/blob/develop/ios/Framework/Core/Extensions/NSError%2BScreens.swift) class to encapsulate the errors:
+
+    override public func validateData() -> ValidationError? {
+        let error = super.validateData()
+            
+        if error == nil {
+            if folderId <= 0 {
+                return ValidationError("Undefined folderId")
+            }
+        }
+            
+        return error
+    }
+    
+Finally, you must override two methods in the Connector class: one to retrieve the 
 page's rows, and the other to retrieve the row count:
 
-    override public func doAddPageRowsServiceCall(session session: LRBatchSession, startRow: Int, 
-        endRow: Int) {
-            // Write the Liferay Mobile SDK service call to retrieve records from 
-            // startRow and endRow.
+    public override func doAddPageRowsServiceCall(session session: LRBatchSession, startRow: Int, endRow: Int, obc: LRJSONObjectWrapper?) {
+        // Write the Liferay Mobile SDK service call to retrieve records from 
+        // startRow and endRow.
     }
 
     override public func doAddRowCountServiceCall(session session: LRBatchSession) {
@@ -137,31 +158,30 @@ page's rows, and the other to retrieve the row count:
 
 In Bookmark List Screenlet, add these methods to the Connector class as follows: 
 
-    override public func doAddPageRowsServiceCall(session session: LRBatchSession, startRow: Int, 
-        endRow: Int) {
-            let service = LRBookmarksEntryService_v62(session: session)
-
-            do {
-                try service.getEntriesWithGroupId(groupId,
-                folderId: folderId,
-                start: Int32(startRow),
-                end: Int32(endRow))
-            }
-            catch  {
-                // ignore error: the method returns nil (converted to an error) 
-                // because the request is not actually sent
-            }
+    public override func doAddPageRowsServiceCall(session session: LRBatchSession, startRow: Int, endRow: Int, obc: LRJSONObjectWrapper?) {
+        let service = LRBookmarksEntryService_v7(session: session)
+        
+        do {
+            try service.getEntriesWithGroupId(groupId,
+                                              folderId: folderId,
+                                              start: Int32(startRow),
+                                              end: Int32(endRow))
+        }
+        catch  {
+            // ignore error: the method returns nil (converted to an error) because
+            // the request is not actually sent
+        }
     }
-
+    
     override public func doAddRowCountServiceCall(session session: LRBatchSession) {
-        let service = LRBookmarksEntryService_v62(session: session)
-
+        let service = LRBookmarksEntryService_v7(session: session)
+        
         do {
             try service.getEntriesCountWithGroupId(groupId, folderId: folderId)
         }
         catch  {
-            // ignore error: the method returns nil (converted to an error) 
-            // because the request is not actually sent
+            // ignore error: the method returns nil (converted to an error) because
+            // the request is not actually sent
         }
     }
 
@@ -171,11 +191,7 @@ Interactor.
 ## Creating the Interactor [](id=creating-the-interactor)
 
 Recall that Screenlet Interactors respond to user actions. In list Screenlets, 
-loading entities is usually the only action a user can take. The app developer 
-can trigger this action in response to a manual user action by calling the 
-`loadList` or `refreshList` methods. Alternatively, the app developer can use 
-the `autoLoad` property to trigger the action automatically when the Screenlet 
-appears on the screen. 
+loading entities is usually the only action a user can take.
 
 The Interactor class of a list Screenlet that implements fluent pagination 
 must extend `BaseListPageLoadInteractor`. Your Interactor class must also 
@@ -210,16 +226,15 @@ the Interactor class as follows:
 
 The Interactor class must also initiate the server request via the Connector, 
 and convert the results into model objects. You'll override the 
-`createConnector` method to create a Connector instance that initiates the 
-request. If your Screenlet implements fluent pagination, as Bookmark List 
-Screenlet does, your `createConnector` method must convert the page number (the 
+`createListPageConnector` method to create a Connector instance that initiates the 
+request. Your `createListPageConnector` method must convert the page number (the 
 Interactor's `page` attribute) to the page's start and end record numbers. Use 
 the `firstRowForPage` method to do this. Add the following `createConnector` 
 method to the `BookmarkListPageLoadInteractor`:
 
-    override public func createConnector() -> PaginationLiferayConnector {
+    public override func createListPageConnector() -> PaginationLiferayConnector {
         let screenlet = self.screenlet as! BaseListScreenlet
-
+            
         return BookmarkListPageLiferayConnector(
             startRow: screenlet.firstRowForPage(self.page),
             endRow: screenlet.firstRowForPage(self.page + 1),
@@ -231,8 +246,9 @@ method to the `BookmarkListPageLoadInteractor`:
 Similarly, you'll override the `convertResult` method in the Interactor class to 
 convert each result into a model object. The Screenlet calls this method once 
 for each entity retrieved from the server, with an entity as the method's only 
-argument. For Bookmark List Screenlet, you can therefore override this method to 
-create a `Bookmark` instance for each entity:
+argument. For Bookmark List Screenlet, if you followed the [advance tutorial](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets-advanced)
+you should have a `Bookmark` model that you can use in this case. You can
+therefore override this method to create a `Bookmark` instance for each entity:
 
     override public func convertResult(serverResult: [String:AnyObject]) -> AnyObject {
         return Bookmark(attributes: serverResult)
@@ -254,20 +270,18 @@ Nice work! Next, you'll create the Screenlet class.
 ## Creating the Screenlet Class [](id=creating-the-screenlet-class)
 
 Now that your Screenlet's other components exist, you can create the Screenlet 
-class. A list Screenlet's Screenlet class must extend `BaseListScreenlet`. You 
-should also annotate the Screenlet class as `IBDesignable`. Your Screenlet class 
-must also define the configuration properties required for the Screenlet to 
-work. You should define these as `IBInspectable` properties. 
+class. A list Screenlet's Screenlet class must extend `BaseListScreenlet`.
+Your Screenlet class must also define the configuration properties required
+for the Screenlet to work. You should define these as `IBInspectable` properties. 
 
 Bookmark List Screenlet's Screenlet class requires properties for the `groupId` 
 and `folderId`. If you want to support offline mode, you should also add an 
 `offlinePolicy` property. Create the `BookmarkListScreenlet` class as follows: 
 
-    @IBDesignable public class BookmarkListScreenlet: BaseListScreenlet {
+    public class BookmarkListScreenlet: BaseListScreenlet {
 
         @IBInspectable public var groupId: Int64 = 0
         @IBInspectable public var folderId: Int64 = 0
-
         @IBInspectable public var offlinePolicy: String? = CacheStrategyType.RemoteFirst.rawValue
         
     }
@@ -275,33 +289,51 @@ and `folderId`. If you want to support offline mode, you should also add an
 Next, override the method that creates the Interactor for a specific page. In 
 Bookmark List Screenlet, this is the `createPageLoadInteractor` method. The 
 Screenlet calls this method when it needs to load a page. If your Screenlet 
-supports offline mode, you should also pass the value of the `offlinePolicy` 
-property to the interactor. Add this method to Bookmark List Screenlet's 
-Screenlet class as follows:
+supports offline mode, you should also pass a `CacheStrategyType` object to
+the interactor, using the value of `offlinePolicy`.
+
+Add this method to Bookmark List Screenlet's Screenlet class as follows:
 
     override public func createPageLoadInteractor(
         page page: Int, 
         computeRowCount: Bool) -> BaseListPageLoadInteractor {
 
-            let interactor = BookmarkListPageLoadInteractor(
-                screenlet: self,
-                page: page,
-                computeRowCount: computeRowCount,
-                groupId: self.groupId,
-                folderId: self.folderId)
+        let interactor = BookmarkListPageLoadInteractor(screenlet: self,
+                                                        page: page,
+                                                        computeRowCount: computeRowCount,
+                                                        groupId: self.groupId,
+                                                        folderId: self.folderId)
 
         interactor.cacheStrategy = CacheStrategyType(rawValue: self.offlinePolicy ?? "") ?? .RemoteFirst
 
         return interactor
     }
 
-Next, you must call your delegate's methods to handle the Screenlet's events. 
-You first need a reference to the delegate. The class `BaseScreenlet`, which 
-`BaseListScreenlet` extends, already defines the `delegate` property to store 
-the delegate object. Any list Screenlet therefore has this property, and any app 
-developer using the Screenlet can assign an object to the property. To avoid 
-casting this `delegate` property to `BookmarkListScreenletDelegate` every time 
-you use it, you can add a computed property that does this just once: 
+Next, you must create the delegate for your Screenlet. In order to create this
+delegate, follow the steps described in [this](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets-advanced#add-screenlet-delegate-ios)
+chapter of the [advanced tutorial](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets-advanced).
+You will need delegate methods for success/failure and for row selection.
+For example, for our `BookmarkListScreenlet`:
+
+    @objc public protocol BookmarkListScreenletDelegate : BaseScreenletDelegate {
+        
+        optional func screenlet(screenlet: BookmarkListScreenlet,
+                                onBookmarkListResponse bookmarks: [Bookmark])
+            
+        optional func screenlet(screenlet: BookmarkListScreenlet,
+                                onBookmarkListError error: NSError)
+            
+        optional func screenlet(screenlet: BookmarkListScreenlet,
+                                onBookmarkSelected bookmark: Bookmark)
+        
+    }
+
+Once your delegate is created, you'll first need a reference to this delegate.
+The class `BaseScreenlet`, which `BaseListScreenlet` extends, already defines
+the `delegate` property to store the delegate object. Any list Screenlet
+therefore has this property, and any app developer using the Screenlet can
+assign an object to the property. To avoid casting this `delegate` property to `BookmarkListScreenletDelegate` every time you use it, you can add a computed
+property that does this just once: 
 
     public var bookmarkListDelegate: BookmarkListScreenletDelegate? {
         return delegate as? BookmarkListScreenletDelegate
@@ -346,104 +378,17 @@ ready-to-use component that you can add to your storyboard. You can even
 [package it](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes#publish-your-themes-using-cocoapods)
 to contribute to the Liferay Screens project, or distribute it with CocoaPods.
 
-## Extra: Sorted List by Comparator [](id=list-sorted-comparator)
-
-As you can see in your list screenlet properties, you can add an `obcClassName`. With this parameter you can set an `OrderByComparator`. This class allows to sort the results. If you want to set this comparator, you must add the full className in your `@IBInspectable` property named `obcClassName`.
-
-For example, if you want to sort the results by URL, you must set `obcClassName` to `"com.liferay.bookmarks.util.comparator.EntryURLComparator"`. But you can sort it by name, date, etc., with the proper comparator. This is an optional property, so you can omit it. Be careful because `obcClassName` is different in 6.2 and 7.0 version. Also, if there isn't the comparator you want, you can create it yourself.
-
-For creating a new comparator, you must create a class that extends `OrderByComparator<E>`. This `E` has to be the object model that your list manages. After that, you have to override the methods you want for your sorted list. For example, `BookmarkListScreenlet` can use `EntryURLComparator`. This comparator class sort the results by URL:
-
-	public class EntryURLComparator extends OrderByComparator<BookmarksEntry> {
-
-		public static final String ORDER_BY_ASC = "BookmarksEntry.url ASC";
-	
-		public static final String ORDER_BY_DESC = "BookmarksEntry.url DESC";
-	
-		public static final String[] ORDER_BY_FIELDS = {"url"};
-	
-		public EntryURLComparator() {
-			this(false);
-		}
-	
-		public EntryURLComparator(boolean ascending) {
-			_ascending = ascending;
-		}
-	
-		@Override
-		public int compare(BookmarksEntry entry1, BookmarksEntry entry2) {
-			String url1 = StringUtil.toLowerCase(entry1.getUrl());
-			String url2 = StringUtil.toLowerCase(entry2.getUrl());
-	
-			int value = url1.compareTo(url2);
-	
-			if (_ascending) {
-				return value;
-			}
-			else {
-				return -value;
-			}
-		}
-	
-		@Override
-		public String getOrderBy() {
-			if (_ascending) {
-				return ORDER_BY_ASC;
-			}
-			else {
-				return ORDER_BY_DESC;
-			}
-		}
-	
-		@Override
-		public String[] getOrderByFields() {
-			return ORDER_BY_FIELDS;
-		}
-	
-		@Override
-		public boolean isAscending() {
-			return _ascending;
-		}
-	
-		private final boolean _ascending;
-
-	}
-
-## Extra: List with sections [](id=list-with-section)
-
-One common pattern in iOS list is split its elements between sections. You can 
-achieve it in a very simple way. Linking with the previous example, imagine you 
-want to group or bookmarks by host. An **important** thing to notice is that you 
-have to order our content according to the sections you want to make, how we 
-just explained in the previous part of the tutorial
-[previous part of the tutorial](#list-sorted-comparator) 
-
-In the first place you need to revisit our brand new 
-`BookmarkListPageLoadInteractor` and add an extra method. This method is 
-`func sectionForRowObject(object: AnyObject) -> String?`
-in this method, we need to return the section for the object argument, in our 
-case we will return the host for the current bookmark url.
-
-The complete method will be like this:
-
-	public override func sectionForRowObject(object: AnyObject) -> String? {
-		guard let bookmark = object as? Bookmark else {
-			return nil
-		}
-
-		let host = NSURL(string: bookmark.url)?.host
-
-		return host
-	}
-	
-And that's all, from now you will see your list grouped by bookmark hosts.
+If you want to go deeper into the development of a list Screenlet, please refer to 
+our 
+[advanced tutorial](/develop/tutorials/-/knowledge_base/7-0/creating-ios-list-screenlets-advanced), 
+where you can learn to: create custom cells, add sorted lists, add sections and much more!
 
 ## Related Topics [](id=related-topics)
 
+[Creating iOS List Screenlets (Advanced)](/develop/tutorials/-/knowledge_base/7-0/creating-ios-list-screenlets-advanced)
+
 [Creating iOS Screenlets](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets)
 
+[Creating iOS Screenlets (Advanced)](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets-advanced)
+
 [Architecture of Liferay Screens for iOS](/develop/tutorials/-/knowledge_base/7-0/architecture-of-liferay-screens-for-ios)
-
-[Packaging iOS Themes](/develop/tutorials/-/knowledge_base/7-0/packaging-ios-themes)
-
-[Using Themes in iOS Screenlets](/develop/tutorials/-/knowledge_base/7-0/using-themes-in-ios-screenlets)
