@@ -51,11 +51,11 @@ connection.
 
 | Attribute | Data type | Explanation |
 |-----------|-----------|-------------|
-| `repositoryId` | `number` | The ID of the site (group) where the image gallery exists. |
-| `folderId` | `number` | The ID of the image gallery folder to be displayed. |
+| `repositoryId` | `number` | The ID of the repository where the folder exists. |
+| `folderId` | `number` | The ID of the folder to be displayed. |
 | `mimeTypes` | `string` | The comma-separated list of MIME types for the Screenlet to support. |
 | `filePrefix` | `string` | The prefix to use on image titles when uploading images. |
-| `offlinePolicy` | `string` | The offline mode setting. First, the Screenlet takes `cache-first` but then, the default value is `remote-first`. See the [Offline section](/develop/reference/-/knowledge_base/7-0/gallery-screenlet-for-ios#offline) for details. |
+| `offlinePolicy` | `string` | The default value is `remote-first`. See the [Offline section](/develop/reference/-/knowledge_base/7-0/gallery-screenlet-for-ios#offline) for details. |
 | `autoLoad` | `boolean` | Whether the list loads automatically when the Screenlet appears in the app's UI. The default value is `true`. |
 | `refreshControl` | `boolean` | Whether a standard [iOS `UIRefreshControl`](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIRefreshControl_class/) appears when the user does the pull to refresh gesture. The default value is `true`. |
 | `firstPageSize` | `number` | The number of items to display on the first page. The default value is `50`. |
@@ -71,7 +71,7 @@ connection.
 ## Delegate [](id=delegate)
 
 Web Content List Screenlet delegates some events to an object that conforms to 
-the `WebContentListScreenletDelegate` protocol. This protocol lets you implement 
+the `ImageGalleryScreenletDelegate` protocol. This protocol lets you implement 
 the following methods: 
 
 - `- screenlet:onImageEntriesResponse:`: Called when a page of contents is 
@@ -91,10 +91,10 @@ the following methods:
   
 - `- screenlet:onImageUploadStart:`: Called when an item is prepared to be upload.
 
-- `- screenlet:onImageUploadProgress:`: Called when an item is uploading.
+- `- screenlet:onImageUploadProgress:`: Called when upload progress change.
   
 - `- screenlet:onImageUploadError:`: Called when an error occurs in the uploaded process. The `NSError` object describes the error.
 
 - `- screenlet:onImageUploaded:`: Called when an item has finished uploading.
   
-- `- screenlet:onImageUploadDetailViewCreated:`: Called when the detail upload view has to be created.
+- `- screenlet:onImageUploadDetailViewCreated:`: Called when the detail upload view is going to be presented, the default way of presenting it is using a modal view controller. You **only** need to implement this in the case you don't want this behaviour. This method should present the view, passed as parameter, like you prefer and then return true, what means that you already presented it and the default behaviour should not be executed.
