@@ -577,6 +577,85 @@ And finally, override the `createProgressPresenter` method in the Screenlet's vi
 
 And now, your Screenlet can notify users of its progress!
 
+## Creating the Model Class [](id=creating-the-model-class)
+
+Each entity retrieved from Liferay typically returns from the server as 
+`[String:AnyObject]`, where `String` is the matching Liferay entity's attribute, 
+and `AnyObject` is the attribute's value. To work conveniently with these 
+results in your Screenlet, you must create a model class that converts each 
+entity into an object that represents the corresponding Liferay entity.
+
+Liferay Screens already provides [this Models](https://github.com/liferay/liferay-screens/tree/master/ios/Framework/Core/Models).
+
+For example, to represent bookmarks in Bookmark List Screenlet, you must create a 
+class that creates a `Bookmark` objects for each `[String:AnyObject]` that comes 
+back from the server. Create this class now: 
+
+    @objc public class Bookmark : NSObject {
+
+        public let attributes: [String:AnyObject]
+
+        public var name: String {
+            return attributes["name"] as! String
+        }
+
+        override public var description: String {
+            return attributes["description"] as! String
+        }
+
+        public var url: String {
+            return attributes["url"] as! String
+        }
+
+        public init(attributes: [String:AnyObject]) {
+            self.attributes = attributes
+        }
+
+    }
+
+This class defines computed properties to return the attribute values for each 
+bookmark's name and URL.
+
+And we just change the dictionary objects used for Bookmark objects. In the Connector:
+
+    public var resultBookmarkInfo: Bookmark?
+
+    ...
+    
+    if let result = result as? [String: AnyObject] { 
+        resultBookmarkInfo = result 
+        resultBookmarkInfo = Bookmark(attributes: result) 
+        lastError = nil 
+    }
+    
+    ...
+
+In the Interactor:
+
+    public var resultBookmark: Bookmark?
+        
+    override public func completedConnector(c: ServerConnector) { 
+        if let addCon = (c as? AddBookmarkLiferayConnector), 
+                bookmark = addCon.resultBookmarkInfo { 
+            self.resultBookmark = bookmark 
+        } 
+    } 
+
+And finally, in the Screenlet:
+
+    optional func screenlet(screenlet: AddBookmarkScreenlet, 
+                            onBookmarkAdded bookmark: Bookmark) 
+    
+    ...
+
+    interactor.onSuccess = { 
+        if let bookmark = interactor.resultBookmark { 
+            self.addBookmarkDelegate?.screenlet?(self, onBookmarkAdded: bookmark) 
+        } 
+    }
+    
+    ...
+
 And this is it! Your screenlet is now more prepared than ever to be used (and reused) in a real environment. Now more than ever you should [package](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes#publish-your-themes-using-cocoapods) it to contribute to the Screens project or distribute with CocoaPods.
 
 ## Related Topics [](id=related-topics)

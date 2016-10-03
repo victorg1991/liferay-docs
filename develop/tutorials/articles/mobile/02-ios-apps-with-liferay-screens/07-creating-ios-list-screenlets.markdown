@@ -58,46 +58,6 @@ DDL List Screenlet use this approach.
 
 Now you're ready to start creating your list Screenlet! 
 
-## Creating the Model Class [](id=creating-the-model-class)
-
-Each entity retrieved from Liferay typically returns from the server as 
-`[String:AnyObject]`, where `String` is the matching Liferay entity's attribute, 
-and `AnyObject` is the attribute's value. To work conveniently with these 
-results in your Screenlet, you must create a model class that converts each 
-entity into an object that represents the corresponding Liferay entity. For 
-example, to represent bookmarks in Bookmark List Screenlet, you must create a 
-class that creates a `Bookmark` objects for each `[String:AnyObject]` that comes 
-back from the server. Create this class now: 
-
-    @objc public class Bookmark : NSObject {
-
-        public let attributes: [String:AnyObject]
-
-        public var name: String {
-            return attributes["name"] as! String
-        }
-
-        override public var description: String {
-            return attributes["description"] as! String
-        }
-
-        public var url: String {
-            return attributes["url"] as! String
-        }
-
-        public init(attributes: [String:AnyObject]) {
-            self.attributes = attributes
-        }
-
-    }
-
-This class defines computed properties to return the attribute values for each 
-bookmark's name and URL. Note that in the example code in GitHub, this class is 
-in the same file (`BookmarkListScreenlet.swift`) as the Screenlet class. You 
-don't have to create the model class there--you can create it anywhere you like. 
-
-Next, you'll create your Screenlet's View. 
-
 ## Creating the View [](id=creating-the-view)
 
 Recall that each Screenlet requires a View to serve as its UI. In Xcode, first 
