@@ -40,15 +40,12 @@ First though, you should understand how pagination works with list Screenlets.
 ## Pagination [](id=pagination)
 
 To ensure that users can scroll smoothly through large lists of items, list 
-Screenlets should support 
-[fluent pagination](http://www.iosnomad.com/blog/2014/4/21/fluent-pagination). 
-In cases where you only have a small list of items, however, you can skip this. 
-For example, if you want to list the days of the week, you don't need to 
-implement fluent pagination. 
+Screenlets support 
+[fluent pagination](http://www.iosnomad.com/blog/2014/4/21/fluent-pagination).
 
 Liferay Screens gives you some tools to implement fluent pagination with 
-configurable page size, as described in the above link. Asset List Screenlet and 
-DDL List Screenlet use this approach. 
+configurable page size, as described in the above link. All list Screenlets in
+Screens use this approach.
 
 Now you're ready to start creating your list Screenlet! 
 
@@ -58,40 +55,18 @@ Recall that each Screenlet requires a View to serve as its UI. In Xcode, first
 create a new XIB file called `BookmarkListView_default.xib`. Use Interface 
 Builder to construct your Screenlet's UI in this file. Since the Screenlet must 
 show a list of items, you should add `UITableView` to this XIB. For example, 
-[Bookmark List Screenlet's XIB file](https://github.com/liferay/liferay-screens/blob/master/ios/Samples/Bookmark/BookmarkListScreenlet/BookmarkListView_default.xib) 
-uses a simple `UITableView` to show the list of bookmarks. 
+[Bookmark List Screenlet's XIB file](https://github.com/liferay/liferay-screens/blob/master/ios/Samples/Bookmark/BookmarkListScreenlet/Themes/Default/BookmarkListView_default.xib) 
+uses a simple `UITableView` to show the list of bookmarks. The name of this XIB should follow the [Naming Convention](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#ios-naming-convention) specified in the [Best Practices](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
 
 Now create a new View class with a name that matches that of the XIB file's 
-prefix. Since the XIB uses `UITableView`, your View class must extend 
-`BaseListTableView`. For example, this is Bookmark List Screenlet's View class 
-declaration: 
+prefix. The name of this class should also follow the [Naming Convention](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#ios-naming-convention) specified in the [Best Practices](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
+
+Since the XIB uses `UITableView`, your View class must extend `BaseListTableView`. For example, this is Bookmark List Screenlet's View class declaration: 
 
     public class BookmarkListView_default: BaseListTableView {...
 
 In Interface Builder, set this new class as your XIB's Custom Class, and assign 
 the `tableView` outlet to your `UITableView` component. 
-
-Next, you must set the style and contents of the table's cells (rows). If your 
-entities are simple you can use the default table cell style. For example, the 
-default works great if you only need to display a single piece of text in each 
-cell. To display much more than this, however, you must create a custom table 
-cell. This is the case with Bookmark List Screenlet, which must display each 
-bookmark's name and URL. To create a custom table cell, first create an XIB 
-file and accompanying class. The XIB should contain a table view cell, and the 
-class should extend `UITableViewCell`. Be sure to set the class as your XIB's 
-Custom Class in Interface Builder. Add any other UI components you need in the 
-XIB's table view cell, and create outlets to them in the class. For example, 
-`BookmarkCell_default.xib` and `BookmarkCell_default.swift` define the custom 
-table cell in Bookmark List Screenlet. The XIB contains a table view cell with 
-two labels: one for the bookmark's name and the other for its URL. The class 
-extends `UITableViewCell` and contains outlets that store each label's text as 
-`UILabel`: 
-
-    class BookmarkCell_default: UITableViewCell {
-
-        @IBOutlet weak var nameLabel: UILabel!
-        @IBOutlet weak var urlLabel: UILabel!
-    }
 
 Next, you must override the methods in the View class that fill the table cells' 
 contents. There are two methods for this, depending on the type of cell being 
@@ -100,59 +75,24 @@ filled:
 - **Normal cells:** the cells that show the entities. These cells typically use 
   `UILabel`, `UIImage`, or any other UI component to show the entity's 
   attributes. Override the `doFillLoadedCell` method to fill this type of cell. 
-- **Progress cell:** the cell shown at the bottom of the list to indicate that 
-  the list is loading the next page of items. This typically includes a 
-  `UIActivityIndicator` or similar component. Override the 
-  `doFillInProgressCell` method to fill this type of cell. 
+- **Progress cell:** the cell that show the entities that are not already loaded. Override the doFillInProgressCell method to fill this type of cell.
 
 In Bookmark List Screenlet, you must override `doFillLoadedCell` to set each 
-cell's `nameLabel` and `urlLabel` to a bookmark's name and URL, respectively. 
+cell's `textLabel` to a bookmark's name. 
 Add this method in the `BookmarkListView_default` class now: 
 
     override public func doFillLoadedCell(row row: Int, cell: UITableViewCell, object: AnyObject) {
-        let bookmarkCell = cell as! BookmarkCell_default
         let bookmark = object as! Bookmark
-
-        bookmarkCell.nameLabel.text = bookmark.name
-        bookmarkCell.urlLabel.text = bookmark.url
+    
+        cell.textLabel?.text = bookmark.name
     }
 
 Now you'll override Bookmark List Screenlet's `doFillInProgressCell` method. 
 There's no need to do anything fancy here to indicate that content is loading. 
-Simply set the cell's `nameLabel` to the string `"Loading..."`:
+Simply set the cell's `textLabel` to the string `"Loading..."`:
 
     override public func doFillInProgressCell(row row: Int, cell: UITableViewCell) {
-    
-        let bookmarkCell = cell as! BookmarkCell_default
-        bookmarkCell.nameLabel.text = "Loading..."
-    }
-
-Next, you must configure the cells to use the custom table cell's XIB file. If 
-your Screenlet only uses one custom table cell, as is the case in Bookmark List 
-Screenlet, then you must do this by overriding the `doRegisterCellNib` method. 
-This method must load and register the XIB file to use for the cells. Add this 
-method to Bookmark List Screenlet's View class: 
-
-    override public func doRegisterCellNib(id id: String) {
-        let nib = UINib(nibName: "BookmarkCell_default", bundle: NSBundle.mainBundle())
-
-        tableView?.registerNib(nib, forCellReuseIdentifier: id)
-    }
-
-Note that there may be cases where you need to use several custom table cells. 
-This is common if your data can exist in multiple states. In this case, you must 
-override the `doRegisterCellNib` method to register all the necessary XIB files 
-using your own cell identifiers. Then override the `doDequeueReusableCell` 
-method to dequeue the cell for the supplied identifier. For example, in Bookmark 
-List Screenlet you may want to use a different cell style to display a bookmark 
-that has an invalid URL. The following `doDequeueReusableCell` method is an 
-example of cells with the IDs `firstCellRow` or `regularCell` being dequeued: 
-
-    public func doDequeueReusableCell(row row: Int) -> UITableViewCell {
-        let cellId = (row == 1) ? "firstCellRow" : "regularCell"
-
-        return tableView?.dequeueReusableCellWithIdentifier(cellId)
-            ?? UITableViewCell(style: .Default, reuseIdentifier: cellId)
+        cell.textLabel?.text = "Loading..."
     }
 
 Now that your View is finished, you can create the Connector. 
@@ -160,7 +100,7 @@ Now that your View is finished, you can create the Connector.
 ## Creating the Connector [](id=creating-the-connector)
 
 Recall that a Screenlet's Connector makes the call that retrieves data from the 
-server. To make a Connector that supports fluent pagination, your Connector 
+server. To make a Connector for a list Screenlet, your Connector 
 class must extend `PaginationLiferayConnector`. Your Connector class should also 
 contain any properties it requires to retrieve data. For example, the Bookmark 
 List Screenlet must retrieve bookmarks from a Bookmarks portlet in a specific 
