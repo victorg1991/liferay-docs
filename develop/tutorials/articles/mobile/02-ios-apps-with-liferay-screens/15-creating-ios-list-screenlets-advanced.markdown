@@ -68,7 +68,7 @@ In the `BookmarkListView_default-custom`:
         tableView?.registerNib(nib, forCellReuseIdentifier: BookmarkCellId)
     }
 
-Note that we use a constant `let BookmarkCellId = "bookmarkCell"` instead of an
+Note that we use a constant `let BookmarkCellId = "bookmarkCell"` instead of a
 hardcoded string, as suggested in the [Avoid Hardcoded Strings](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hardcoded-strings)
 chapter of the [Best Practices](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
 
@@ -212,6 +212,151 @@ The complete method will be like this:
     }
 
 And that's all, from now you will see your list grouped by bookmark hosts.
+
+## Use Collection View instead of Table View [](id=use-collection-view-instead-table-view)
+
+Liferay Screens lets you use [the iOS `UICollectionView` class](https://developer.apple.com/reference/uikit/uicollectionview)
+to create additional Views for your list Screenlets. Using `UICollectionView` in
+your View lets your list Screenlet present in a much more flexible list-based UI.
+
+This tutorial shows you how to create such a View using the sample Bookmark List
+Screenlet as an example.
+
+### Creating the Cell
+
+First, we'll need to create the cell for each element of our Collection View. In
+consecuence, your cell's class must extend `UICollectionViewCell`. When you
+create your cell's class in Xcode, select the option that creates a XIB file
+too, and call it `BookmarkCell_default-collection.xib`.
+
+![Figure 1: The Collection View cell XIB.](../../../images/screens-ios-collectionview-cell.png)
+
+Now, add all the view logic to your cell's view class:
+
+    import UIKit
+    import LiferayScreens
+
+    public class BookmarkCell_default_collection: UICollectionViewCell {
+
+
+        //MARK: Outlets
+
+        @IBOutlet weak var centerLabel: UILabel?
+
+        @IBOutlet weak var urlLabel: UILabel?
+
+
+        //MARK: Public properties
+
+        public var bookmark: Bookmark? {
+            didSet {
+                if let bookmark = bookmark, url = NSURL(string: bookmark.url),
+                        firstLetter = url.host?.remove("www.").characters.first {
+                    self.centerLabel?.text = String(firstLetter).uppercaseString
+
+                    self.urlLabel?.text = bookmark.url.remove("http://").remove("https://").remove("www.")
+                }
+            }
+        }
+
+
+        //MARK: UICollectionViewCell
+
+        override public func prepareForReuse() {
+            super.prepareForReuse()
+
+            centerLabel?.text = "..."
+            urlLabel?.text = "..."
+        }
+    }
+
+### Creating the view
+
+First create a new XIB file called `BookmarkListView_default-collection.xib`.
+Use Interface Builder to construct your Screenlet's UI in this file. Since the
+Screenlet must show a list of items, you should add a `UICollectionView` to this
+XIB.
+
+Now create a new View class with a name that matches that of the XIB file's
+prefix. The name of both the XIB and the Swift files should follow
+the [Naming Convention](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#ios-naming-convention)
+specified in the [Best Practices](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
+
+Since the XIB uses UICollectionView, your View class must extend
+`BaseListCollectionView. For example, this is Bookmark Collection List
+Screenlet's View class declaration:
+
+    public class BookmarkListView_default_collection : BaseListCollectionView { ...
+
+In Interface Builder, set this new class as your XIB's Custom Class, and assign
+the `collectionView` Outlet to your UICollectionView component.
+
+After doing this, you can start adding code to the view class, the first thing
+to do is to register the cell you created in the previous section.
+
+To register the cell you have to override the `doRegisterCellNibs` method like
+this:
+
+    public override func doRegisterCellNibs() {
+        let cellNib = UINib(nibName: "BookmarkCell_default-collection", bundle: nil)
+        collectionView?.registerNib(cellNib, forCellWithReuseIdentifier: BookmarkCellId)
+    }
+
+Note that we use a constant `let BookmarkCellId = "bookmarkCell"` instead of a
+hardcoded string, as suggested in the [Avoid Hardcoded Strings](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hardcoded-strings)
+chapter of the [Best Practices](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
+
+You also have to specify the identifier that you use to register the cell in the
+method `doGetCellId`:
+
+    public override func doGetCellId(indexPath indexPath: NSIndexPath, object: AnyObject?) -> String {
+        return BookmarkCellId
+    }
+
+Next, you must override the methods in the View class that fill the table cells'
+contents
+
+First let's override `doFillLoadedCell` you have to set the Bookmark received
+in the object argument into the cell:
+
+    public override func doFillLoadedCell(
+            indexPath indexPath: NSIndexPath,
+            cell: UICollectionViewCell,
+            object: AnyObject) {
+
+        if let cell = cell as? BookmarkCell_default_collection, bookmark = object as? Bookmark {
+            cell.bookmark = bookmark
+        }
+    }
+
+## Creating the layout [](id=creating-layout)
+
+The layout object is a fundamental part in the UICollectionView, it controls the
+position of the elements, size, etc.
+
+You can customize it for your screenlet view in the method `doCreateLayout`:
+
+    public override func doCreateLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 110, height: 110)
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 10
+
+        return layout
+    }
+
+In this example, you use the UICollectionViewFlowLayout which is the basic
+layout that allows you to customize in an easy way things like size of the
+items, spacing between items, scroll direction, etc.
+
+Cool! You're done! If you want to use this new view you will have to go to the
+storyboard where you put your Screenlet and change its theme name variable to
+`default-collection`.
+
+And this is it! Your screenlet is now more prepared than ever to be used
+(and reused) in a real environment. Now more than ever you should
+[package](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes#publish-your-themes-using-cocoapods)
+it to contribute to the Screens project or distribute with CocoaPods.
 
 ## Related Topics [](id=related-topics)
 
