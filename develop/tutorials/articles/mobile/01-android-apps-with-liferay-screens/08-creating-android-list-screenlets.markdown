@@ -806,6 +806,9 @@ Interactor classes in list Screenlets contain a `getPageRowsRequest` method that
 has a parameter named query. You can use this this parameter to set the 
 comparator class to use. To use the comparator, you must set the `obcClassName` 
 property in your Screenlet's XML to the comparator's fully qualified class name. 
+<!-- 
+Do Screenlet developers have to add support for the obcClassName property?
+-->
 
 For example, the following Screenlet XML shows Bookmark List Screenlet with its 
 `obcClassName` property set to 

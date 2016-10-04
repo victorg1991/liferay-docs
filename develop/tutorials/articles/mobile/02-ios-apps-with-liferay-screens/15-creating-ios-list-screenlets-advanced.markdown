@@ -1,44 +1,52 @@
 # Creating iOS List Screenlets (Advanced) [](id=creating-ios-list-screenlets-advanced)
 
-If you followed our previous [creating ios list screenlets tutorial](/develop/reference/-/knowledge_base/7-0/creating-ios-list-screenlets)
-you'll have a nice Screenlet to list bookmarks from a Liferay's Bookmarks Folder
-right in your app. But, what if you want to customize each cell, or want to use
-`UICollectionView` instead of `UITableView`?
+The 
+[basic iOS list Screenlet creation tutorial](/develop/tutorials/-/knowledge_base/7-0/creating-ios-list-screenlets), 
+shows you how to create a simple list Screenlet that displays a list of entities 
+from a Liferay instance. The example Screenlet in that tutorial, Bookmark List 
+Screenlet, displays a list of bookmarks from the Bookmarks portlet in a Liferay 
+instance. But what if you want your list Screenlet to do more? What if you want 
+to customize the cells in the list? What if you want to create a more complex 
+list with 
+[iOS's `UICollectionView`](https://developer.apple.com/reference/uikit/uicollectionview)? 
+Then you're in luck! Screens can handle such functionality without breaking a 
+sweat. This tutorial explains how to do these things, and more. As an example, 
+it references code from the example 
+[Bookmark List Screenlet](https://github.com/liferay/liferay-screens/tree/master/ios/Samples/Bookmark/BookmarkListScreenlet). 
 
-This tutorial explains how to improve your Screenlets with more advanced code. As
-an example, it references code from the sample [List Bookmark Screenlet](https://github.com/liferay/liferay-screens/tree/master/ios/Samples/Bookmark/BookmarkListScreenlet).
-
-If you didn't follow that tutorial or don't have the code right now, you can
-clone the code from the sample [List Bookmark Screenlet](https://github.com/liferay/liferay-screens/tree/develop/ios/Samples/Bookmark/ListBookmarkScreenlet).
-
-So... are you prepared to fully master your list Screenlet?
+First, you'll learn how to create custom cells with your list Screenlets. 
 
 ## Using Custom Cells with List Screenlets [](id=using-custom-cells-with-list-screenlets)
 
-Liferay Screens's Default theme uses the [`UITableView` class](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITableView_Class/)
+Liferay Screens's Default Theme uses the 
+[iOS's `UITableView` class](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITableView_Class/) 
 as a UI component for list Screenlets. Although this works fine for showing
 simple lists of items, you may want to use custom cells to spruce things up a
-bit or show more complex content in the list.
-
-To do this, you must [create a custom theme](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes)
+bit or show more complex content in the list. To do this, you must 
+[create a custom theme](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes)
 that extends the Default theme of the list Screenlet you want to use.
 
-For example, for our `ListBookmarkScreenlet`, create a new theme in your
-Screenlet's folder following the steps described in the
-[Creating iOS Themes tutorial](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes).
+First, create your new theme in your Screenlet's project following the steps 
+described in the 
+[Creating iOS Themes tutorial](/develop/tutorials/-/knowledge_base/7-0/creating-ios-themes). 
+Then create your custom cell's XIB file. As usual, create your XIB's companion 
+class and create as many outlets and actions as you need. Note that if you want 
+to use different layouts for different rows, you must create several XIB files 
+and accompanying companion classes. The name of both the XIB and Swift files 
+should follow 
+[the naming conventions](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#ios-naming-convention)
+specified in the 
+[best practices tutorial](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices). 
 
-Then create the XIB file for your custom cell. As usual, create this file and
-its companion class, and create as many outlets and actions as you need. If you
-want to use different layouts for different rows, create several XIB files and
-companion classes. The name of both the XIB and the Swift files should follow
-the [Naming Convention](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#ios-naming-convention)
-specified in the [Best Practices](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
+The following screenshot shows Bookmark List Screenlet's XIB file 
+`BookmarkCell_default-custom.xib`. This Screenlet needs to show a bookmark's 
+name and URL, so it contains two labels. 
 
-For example, our `BookmarkCell_default-custom.xib` could look like this:
+![Figure 1: The custom cell XIB for Bookmark List Screenlet.](../../../images/screens-ios-xcode-custom-cell.png)
 
-![Figure 1: Custom cell XIB view.](../../../images/screens-ios-xcode-custom-cell.png)
-
-And, on the other hand, the associated class:
+The XIB's class, `BookmarkCell_default_custom`, contains an `@IBOutlet` for each 
+label. Its `bookmark` variable also contains a `didSet` observer that sets the 
+bookmark's name and URL to the appropriate label: 
 
     import UIKit
 
@@ -56,11 +64,10 @@ And, on the other hand, the associated class:
 
     }
 
-Now you're ready to implement your theme's functionality. In your
+Now you're ready to implement your Theme's functionality. In your 
 `*ListView_mytheme` class, override the `doRegisterCellNibs` method to register
-your custom cell:
-
-In the `BookmarkListView_default-custom`:
+your custom cell. For example, Bookmark List Screenlet does this in its 
+`BookmarkListView_default-custom` class: 
 
     public override func doRegisterCellNibs() {
         let nib = UINib(nibName: "BookmarkCell_default-custom", bundle: NSBundle.mainBundle())
@@ -68,13 +75,17 @@ In the `BookmarkListView_default-custom`:
         tableView?.registerNib(nib, forCellReuseIdentifier: BookmarkCellId)
     }
 
-Note that we use a constant `let BookmarkCellId = "bookmarkCell"` instead of a
-hardcoded string, as suggested in the [Avoid Hardcoded Strings](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hardcoded-strings)
-chapter of the [Best Practices](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
+Note that this uses the constant `let BookmarkCellId = "bookmarkCell"` instead 
+of a hardcoded string, as suggested in the 
+[Avoid Hardcoded Strings](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hardcoded-strings)
+section of 
+[the best practices tutorial](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
+<!-- this constant isn't created anywhere in the above code -->
 
-Next, get the cell ID for each row, by override the `doGetCellId` method.
-
-In this example we just return the previous String constant:
+Next, override the `doGetCellId` method to get the cell ID for each row. For 
+example, this method in Bookmark List Screenlet returns the previous string 
+constant:
+<!-- In which class should this be done? -->
 
     override public func doGetCellId(row row: Int, object: AnyObject?) -> String {
         return BookmarkCellId
@@ -84,9 +95,10 @@ To fill the cell with the row's data, override the `doFillLoadedCell` method.
 Note that this method isn't called for in-progress cells; it's only called for
 cells with data. Also note that the source data is stored in the method's
 `object` argument. This is a generic object that you must cast to the specific
-element type.
-
-In the case of this example:
+element type. For example, Bookmark List Screenlet's `doFillLoadedCell` method 
+casts the `object` argument to a `Bookmark`. It then sets the `Bookmark` as the 
+cell's bookmark: 
+<!-- In which class should this be done? -->
 
     override public func doFillLoadedCell(row row: Int, cell: UITableViewCell, object:AnyObject) {
         if let bookmarkCell = cell as? BookmarkCell_default_custom, bookmark = object as? Bookmark {
@@ -94,112 +106,76 @@ In the case of this example:
         }
     }
 
-Remember that you also have the typical [`UITableViewDelegate` protocol](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITableViewDelegate_Protocol/)
-and [`UITableViewDataSource` protocol](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITableViewDataSource_Protocol/)
+Remember that you also have the typical 
+[`UITableViewDelegate` protocol](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITableViewDelegate_Protocol/) 
+and 
+[`UITableViewDataSource` protocol](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITableViewDataSource_Protocol/) 
 methods available to you, so you can override any of them if you need to (check
-first to make sure they're not already overridden). For example, implement the
-following method to use a different cell height for one row:
+first to make sure they're not already overridden). For example, Bookmark List 
+Screenlet implement's the following method to use a different cell height for 
+one row:
+<!-- In which class should this be done? -->
 
     public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 80
     }
 
 Great! Now you know how to implement your own custom cells for use in list
-Screenlets.
+Screenlets. 
 
-## Sorted List by Comparator [](id=list-sorted-comparator)
+Next, you'll learn how to sort your list's contents. 
 
-As you can see in your list Screenlet properties, you can add an `obcClassName`.
-With this parameter you can set an `OrderByComparator`. This class allows to
-sort the results. If you want to set this comparator, you must add the full
-className in your `@IBInspectable` property named `obcClassName`.
+## Sorting Your List
 
-For example, in our `BookmarkListScreenlet` if you want to sort the results by
-URL, you must set `obcClassName` to
-`"com.liferay.bookmarks.util.comparator.EntryURLComparator"`.
+If you want to sort your list Screenlet's list, you must use a *comparator 
+class* in your Liferay instance. A comparator class implements the logic 
+required to sort your entities. You can create your own comparator 
+class, or use ones that already exist in Liferay. 
 
-But you can sort it by name, date, etc., with the proper comparator. This is an
-optional property, so you can omit it. Be careful because `obcClassName` is
-different in 6.2 and 7.0 version. Also, if there isn't the comparator you want,
-you can create it yourself.
+To create a new comparator, you must create a class that extends Liferay's 
+[`OrderByComparator` class](https://docs.liferay.com/portal/7.0/javadocs/portal-kernel/com/liferay/portal/kernel/util/OrderByComparator.html) 
+with your entity as a type argument. Then you must override the methods required 
+to implement the sort. For example, Liferay's 
+[`EntryURLComparator` class](https://github.com/liferay/liferay-portal/blob/7.0.x/modules/apps/collaboration/bookmarks/bookmarks-api/src/main/java/com/liferay/bookmarks/util/comparator/EntryURLComparator.java) 
+sorts bookmarks in the Bookmarks app by URL. 
 
-For creating a new comparator, you must create a class in your Liferay Portal
-that extends `OrderByComparator<E>`. This `E` has to be the object model that
-your list manages. After that, you have to override the methods you want for
-your sorted list. For example, `BookmarkListScreenlet` can use
-`EntryURLComparator`. This comparator class sort the results by URL:
+<!-- 
+Do Screenlet developers have to add support for the `obcClassName` 
+property? If so, how? 
+-->
+To use the comparator, you must set the list Screenlet's `obcClassName` property 
+to the comparator's fully qualified class name. You do this in Interface Builder 
+when inserting the Screenlet in an app, just as you would set any other 
+Screenlet property. 
+<!--
+"If you want to set this comparator, you must add the full className in your 
+`@IBInspectable` property named `obcClassName`."
 
-    public class EntryURLComparator extends OrderByComparator<BookmarksEntry> {
+Does this have to be done in one of the Screenlet's classes? If so, we should 
+include example code.
+-->
 
-        public static final String ORDER_BY_ASC = "BookmarksEntry.url ASC";
+For example, to set Bookmark List Screenlet to sort its results by URL, you must 
+set `obcClassName` to 
+`"com.liferay.bookmarks.util.comparator.EntryURLComparator"`. 
 
-        public static final String ORDER_BY_DESC = "BookmarksEntry.url DESC";
+Be careful because `obcClassName` is different in 6.2 and 7.0 version. 
+<!-- How is this property different between 6.2 and 7.0? -->
 
-        public static final String[] ORDER_BY_FIELDS = {"url"};
+## Create Sections for Your List
 
-        public EntryURLComparator() {
-            this(false);
-        }
+Splitting lists into sections that contain like elements is common in iOS apps. 
+To do this in list Screenlets, you must first use a comparator as described in 
+the preceding section to sort the list by the criteria you'll use to create the 
+sections. You must then override the `sectionForRowObject` method in your 
+Interactor. This method is called for each item in the list, and should return 
+the information necessary to place the item in a section. 
 
-        public EntryURLComparator(boolean ascending) {
-            _ascending = ascending;
-        }
-
-        @Override
-        public int compare(BookmarksEntry entry1, BookmarksEntry entry2) {
-            String url1 = StringUtil.toLowerCase(entry1.getUrl());
-            String url2 = StringUtil.toLowerCase(entry2.getUrl());
-
-            int value = url1.compareTo(url2);
-
-            if (_ascending) {
-                return value;
-            }
-            else {
-                return -value;
-            }
-        }
-
-        @Override
-        public String getOrderBy() {
-            if (_ascending) {
-                return ORDER_BY_ASC;
-            }
-            else {
-                return ORDER_BY_DESC;
-            }
-        }
-
-        @Override
-        public String[] getOrderByFields() {
-            return ORDER_BY_FIELDS;
-        }
-
-        @Override
-        public boolean isAscending() {
-            return _ascending;
-        }
-
-        private final boolean _ascending;
-
-    }
-
-## List with Sections [](id=list-with-section)
-
-One common pattern in iOS list is split its elements between sections. You can
-achieve it in a very simple way. Linking with the previous example, imagine you
-want to group our bookmarks by host. An **important** thing to notice is that
-you have to order the content according to the sections you want to make, how we
-just explained in the previous part of the tutorial
-[previous part of the tutorial](#list-sorted-comparator)
-
-In order tu support sections you need to revisit our brand new
-`BookmarkListPageLoadInteractor` and add an extra method. This method is
-`func sectionForRowObject(object: AnyObject) -> String?`
-in this method, we need to return the section for the object argument, in our
-case we will return the host for the current bookmark url.
-
-The complete method will be like this:
+For example, you can create sections for grouping Bookmark List Screenlet's 
+results by hostname. To do so, first sort the results with `EntryURLComparator` 
+as detailed in the preceding section. In the `BookmarkListPageLoadInteractor` 
+class, then override the `sectionForRowObject` method to return the URL's 
+hostname: 
 
     public override func sectionForRowObject(object: AnyObject) -> String? {
         guard let bookmark = object as? Bookmark else {
@@ -211,66 +187,84 @@ The complete method will be like this:
         return host?.stringByReplacingOccurrencesOfString("www.", withString: "")
     }
 
-And that's all, from now you will see your list grouped by bookmark hosts.
+Next, you'll learn how to use the `UICollectionView` class to create more 
+complex lists in your list Screenlets. 
 
-## Use Collection View instead of Table View [](id=use-collection-view-instead-table-view)
+## Creating More Complex Lists
 
-Liferay Screens lets you use [the iOS `UICollectionView` class](https://developer.apple.com/reference/uikit/uicollectionview)
-to create additional Views for your list Screenlets. Using `UICollectionView` in
-your View lets your list Screenlet present in a much more flexible list-based UI.
+Up to this point, your list Screenlets' Views have used 
+[iOS's `UITableView` class](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITableView_Class/) 
+to display simple lists. As an experienced iOS developer, you probably know that 
+although `UITableView` is great for creating simple lists, it's not so great at 
+creating more complex lists like grids or stacks. For special list types like 
+this, or your own custom lists, you should use 
+[iOS's `UICollectionView` class](https://developer.apple.com/reference/uikit/uicollectionview) 
+in your list Screenlet's View. 
 
-This tutorial shows you how to create such a View using the sample Bookmark List
-Screenlet as an example.
+Using the sample Bookmark List Screenlet as an example, this section shows you 
+how to create such a View. First, you'll create the list's cell.
 
 ### Creating the Cell
 
-First, we'll need to create the cell for each element of our Collection View. In
-consecuence, your cell's class must extend `UICollectionViewCell`. When you
-create your cell's class in Xcode, select the option that creates a XIB file
-too, and call it `BookmarkCell_default-collection.xib`.
+You'll create your View's cell with the same sequence of steps that you use to 
+create any cell for use in a list Screenlet. Note, however, that the steps' 
+content is a bit different than usual: 
 
-![Figure 1: The Collection View cell XIB.](../../../images/screens-ios-collectionview-cell.png)
+1. Create your cell's XIB file. Define your UI in this file. Because this cell 
+   is part of a View that uses `UICollectionView`, you can shape it however you 
+   want. For example, here's the `BookmarkCell_default-collection.xib` file for 
+   the cell in Bookmark List Screenlet's custom View. It's a simple square that 
+   displays the bookmark's URL and the URL's first letter. 
 
-Now, add all the view logic to your cell's view class:
+    ![Figure 1: The XIB file for the cell in Bookmark List Screenlet's custom View.](../../../images/screens-ios-collectionview-cell.png)
 
-    import UIKit
-    import LiferayScreens
+2. Create your XIB file's class by extending `UICollectionViewCell`. In this 
+   class, create as many outlets and actions for your UI components as you need. 
+   This class should also contain the logic required for your cell's UI to 
+   function. For example, the XIB file's class in Bookmark List Screenlet is 
+   `BookmarkCell_default_collection`. This class extends `UICollectionViewCell` 
+   and contains outlets for the URL (`urlLabel`) and the URL's first letter 
+   (`centerLabel`). Its `bookmark` variable also contains a `didSet` observer 
+   that sets the bookmark's name and URL to the appropriate label. Note that the 
+   `prepareForReuse` method is overridden to reset the labels when they need to 
+   be reused: 
 
-    public class BookmarkCell_default_collection: UICollectionViewCell {
+        import UIKit
+        import LiferayScreens
 
+        public class BookmarkCell_default_collection: UICollectionViewCell {
 
-        //MARK: Outlets
+            //MARK: Outlets
 
-        @IBOutlet weak var centerLabel: UILabel?
+            @IBOutlet weak var centerLabel: UILabel?
+            @IBOutlet weak var urlLabel: UILabel?
 
-        @IBOutlet weak var urlLabel: UILabel?
+            //MARK: Public properties
 
-
-        //MARK: Public properties
-
-        public var bookmark: Bookmark? {
-            didSet {
-                if let bookmark = bookmark, url = NSURL(string: bookmark.url),
+            public var bookmark: Bookmark? {
+                didSet {
+                    if let bookmark = bookmark, url = NSURL(string: bookmark.url),
                         firstLetter = url.host?.remove("www.").characters.first {
-                    self.centerLabel?.text = String(firstLetter).uppercaseString
 
-                    self.urlLabel?.text = bookmark.url.remove("http://").remove("https://").remove("www.")
+                            self.centerLabel?.text = String(firstLetter).uppercaseString
+                            self.urlLabel?.text = bookmark.url.remove("http://").remove("https://").remove("www.")
+                    }
                 }
+            }
+
+            //MARK: UICollectionViewCell
+
+            override public func prepareForReuse() {
+                super.prepareForReuse()
+
+                centerLabel?.text = "..."
+                urlLabel?.text = "..."
             }
         }
 
+Now that your cell exists, you can create the View. 
 
-        //MARK: UICollectionViewCell
-
-        override public func prepareForReuse() {
-            super.prepareForReuse()
-
-            centerLabel?.text = "..."
-            urlLabel?.text = "..."
-        }
-    }
-
-### Creating the view
+### Creating the View
 
 First create a new XIB file called `BookmarkListView_default-collection.xib`.
 Use Interface Builder to construct your Screenlet's UI in this file. Since the
@@ -283,7 +277,7 @@ the [Naming Convention](/develop/tutorials/-/knowledge_base/7-0/ios-best-practic
 specified in the [Best Practices](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
 
 Since the XIB uses UICollectionView, your View class must extend
-`BaseListCollectionView. For example, this is Bookmark Collection List
+`BaseListCollectionView`. For example, this is Bookmark Collection List
 Screenlet's View class declaration:
 
     public class BookmarkListView_default_collection : BaseListCollectionView { ...
