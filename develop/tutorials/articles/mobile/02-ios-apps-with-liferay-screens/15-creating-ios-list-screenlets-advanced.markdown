@@ -329,7 +329,7 @@ in the object argument into the cell:
         }
     }
 
-## Creating the layout [](id=creating-layout)
+### Creating the layout
 
 The layout object is a fundamental part in the UICollectionView, it controls the
 position of the elements, size, etc.
