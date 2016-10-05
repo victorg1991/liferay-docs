@@ -6,8 +6,8 @@
 - Liferay 7.0 CE, Liferay DXP
 - Liferay Screens Compatibility Plugin
   ([CE](http://www.liferay.com/marketplace/-/mp/application/54365664) or 
-  [EE](http://www.liferay.com/marketplace/-/mp/application/54369726), 
-  depending on your portal edition). This app is preinstalled in Liferay 7.0 CE 
+  [DE](http://www.liferay.com/marketplace/-/mp/application/54369726), 
+  depending on your Liferay edition). This app is preinstalled in Liferay 7.0 CE 
   and Liferay DXP instances.
 
 ## Compatibility [](id=compatibility)
@@ -16,30 +16,43 @@
 
 ## Features [](id=features)
 
-Asset Display Screenlet can render an `Asset` without knowing what kind of `Asset` is. Nowadays, the screenlet displays `DLFileEntry` (image, video, audio and PDF), `BlogsEntry` and `WebContent`. You can display your custom `Asset` with `AssetDisplayScreenlet` because exists a listener method for it (see [Listener](#listener) section).
+Asset Display Screenlet can display an asset from a Liferay instance. The 
+Screenlet can currently display Documents and Media files (`DLFileEntry` images, 
+videos, audio files, and PDFs), blogs entries (`BlogsEntry`) and web content 
+articles (`WebContent`). 
+
+Asset Display Screenlet can also display your custom asset types. See 
+[the Listener section of this document](/develop/reference/-/knowledge_base/7-0/asset-display-screenlet-for-android#listener) 
+for details. 
 
 ## Module [](id=module)
 
 - None
 
 ## Views [](id=views)
+<!-- Review my changes to this section -->
 
-The Default View uses different element to show an `Asset` depending on its type. For example, for images, the screenlet uses `ImageView`, for blogs entry uses `TextView`, `UserPortraitScreenlet` and others.
+- Default
+- Material
 
-This screenlet renders another screenlet:
+![Figure 1: Asset Display Screenlet using the Default (left) and Material (right) Views.](../../images/screens-android-assetdisplay.png)
 
-- Images: `ImageDisplayScreenlet`.
-- Videos: `VideoDisplayScreenlet`.
-- Audios: `AudioDisplayScreenlet`.
-- PDFs: `PdfDisplayScreenlet`.
-- `BlogsEntry`: `BlogsEntryDisplayScreenlet`.
-- `WebContent`: `WebContentDisplayScreenlet`.
+The Default View uses different UI elements to show each asset type. For 
+example, it displays images with `ImageView`, and blogs with `TextView`. 
 
-For images, videos, audios and PDFs see [BaseFileDisplayScreenlet](../base-file-display-screenlet-for-android).
+This Screenlet can also render other Screenlets:
 
-These screenlets can be used alone without `AssetDisplayScreenlet`.
+- Images: Image Display Screenlet
+- Videos: Video Display Screenlet
+- Audios: Audio Display Screenlet
+- PDFs: Pdf Display Screenlet
+- Blogs entries: Blogs Entry Display Screenlet
+- Web content: Web Content Display Screenlet
 
-![Figure 1: Asset Display Screenlet using the Default (`default`) Theme.](../../images/screens-android-assetdisplay.png)
+These Screenlets can also be used alone without Asset Display Screenlet.
+
+For information on other ways to display images, videos, audio files, and PDFs, 
+[see Base File Display Screenlet](/develop/reference/-/knowledge_base/7-0/base-file-display-screenlet-for-android).
 
 ## Offline [](id=offline)
 
@@ -48,15 +61,16 @@ connection.
 
 | Policy | What happens | When to use |
 |--------|--------------|-------------|
-| `REMOTE_ONLY` | The Screenlet loads the list from the portal. If a connection issue occurs, the Screenlet uses the listener to notify the developer about the error. If the Screenlet successfully loads the list, it stores the data in the local cache for later use. | Use this policy when you always need to show updated data, and show nothing when there's no connection. |
-| `CACHE_ONLY` | The Screenlet loads the list from the local cache. If the list isn't there, the Screenlet uses the listener to notify the developer about the error. | Use this policy when you always need to show local data, without retrieving remote information under any circumstance. |
-| `REMOTE_FIRST` | The Screenlet loads the list from the portal. If this succeeds, the Screenlet shows the list to the user and stores it in the local cache for later use. If a connection issue occurs, the Screenlet retrieves the list from the local cache. If the list doesn't exist there, the Screenlet uses the listener to notify the developer about the error. | Use this policy to show the most recent version of the data when connected, but show an outdated version when there's no connection. |
-| `CACHE_FIRST` | The Screenlet loads the list from the local cache. If the list isn't there, the Screenlet requests it from the portal and notifies the developer about any errors that occur (including connectivity errors). | Use this policy to save bandwidth and loading time in case you have local (but probably outdated) data. |
+| `REMOTE_ONLY` | The Screenlet loads the data from the Liferay instance. If a connection issue occurs, the Screenlet uses the listener to notify the developer about the error. If the Screenlet successfully loads the data, it stores it in the local cache for later use. | Use this policy when you always need to show updated data, and show nothing when there's no connection. |
+| `CACHE_ONLY` | The Screenlet loads the data from the local cache. If the data isn't there, the Screenlet uses the listener to notify the developer about the error. | Use this policy when you always need to show local data, without retrieving remote information under any circumstance. |
+| `REMOTE_FIRST` | The Screenlet loads the data from the Liferay instance. If this succeeds, the Screenlet shows the data to the user and stores it in the local cache for later use. If a connection issue occurs, the Screenlet retrieves the data from the local cache. If the data doesn't exist there, the Screenlet uses the listener to notify the developer about the error. | Use this policy to show the most recent version of the data when connected, but show an outdated version when there's no connection. |
+| `CACHE_FIRST` | The Screenlet loads the data from the local cache. If the data isn't there, the Screenlet requests it from the Liferay instance and notifies the developer about any errors that occur (including connectivity errors). | Use this policy to save bandwidth and loading time in case you have local (but probably outdated) data. |
 
 ## Required Attributes [](id=required-attributes)
+
 - `entryId`
 
-Or...
+If you don't use `entryId`, you must use both of the following attributes: 
 
 - `className`
 - `classPK`
