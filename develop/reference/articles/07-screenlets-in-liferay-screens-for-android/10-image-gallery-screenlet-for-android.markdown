@@ -55,15 +55,15 @@ the Screenlet:
 
 | Attribute | Data type | Explanation |
 |-----------|-----------|-------------|
-| `repositoryId` | `number` | The ID of the Documents and Media repository containing the image gallery. |
-| `folderId` | `number` | The ID of the image gallery folder to be displayed. |
+| `repositoryId` | `number` | The ID of the Liferay instance's Documents and Media repository that contains the image gallery. If you're using a site's default Documents and Media repository, then the `repositoryId` matches the site ID (`groupId`). |
+| `folderId` | `number` | The ID of the Documents and Media repository folder that contains the image gallery. When accessing the folder in your browser, the `folderId` is at the end of the URL. |
 | `cachePolicy` | `string` | The offline mode setting. See the [Offline section](/develop/reference/-/knowledge_base/7-0/gallery-screenlet-for-android#offline) for details. |
 | `firstPageSize` | `number` | The number of items to display on the first page. The default value is `50`. |
 | `pageSize` | `number` | The number of items to display on second and subsequent pages. The default value is `25`. |
 | `mimeTypes` | `string` | The comma-separated list of MIME types for the Screenlet to support. |
 | `autoLoad` | `boolean` | Whether the list should automatically load when the Screenlet appears in the app's UI. The default value is `true`. |
 | `layoutId` | `@layout` | The layout to use to show the View. |
-| `obcClassName` | `string` | The name of the `OrderByComparator` class to use to sort the results. Omit this property if you don't want to sort the results. Note that you can only use comparator classes that extend `OrderByComparator<DLFileEntry>`. Liferay contains no such comparator classes. You must therefore create your own by extending `OrderByComparator<DLFileEntry>`. To see examples of some comparator classes that extend other Document Library classes, [click here](https://github.com/liferay/liferay-portal/tree/master/portal-impl/src/com/liferay/portlet/documentlibrary/util/comparator). Note, however, that these classes can't be used with `obcClassName` because they don't extend `OrderByComparator<DLFileEntry>`. |
+| `obcClassName` | `string` | The name of the `OrderByComparator` class to use to sort the results. Omit this property if you don't want to sort the results. Note that you can only use comparator classes that extend `OrderByComparator<DLFileEntry>`. Liferay contains no such comparator classes. You must therefore create your own by extending `OrderByComparator<DLFileEntry>`. To see examples of some comparator classes that extend other Document Library classes, [click here](https://github.com/liferay/liferay-portal/tree/master/portal-impl/src/com/liferay/portlet/documentlibrary/util/comparator). |
 
 ## Methods [](id=methods)
 
@@ -74,7 +74,7 @@ the Screenlet:
 ## Listener [](id=listener)
 
 Image Gallery Screenlet delegates some events to an object or class that implements 
-[its `GalleryListener` interface](https://github.com/liferay/liferay-screens/blob/master/android/library/src/main/java/com/liferay/mobile/screens/imagegallery/ImageGalleryListener.java). 
+[its `ImageGalleryListener` interface](https://github.com/liferay/liferay-screens/blob/master/android/library/src/main/java/com/liferay/mobile/screens/imagegallery/ImageGalleryListener.java). 
 This interface extends 
 [the `BaseListListener` interface](https://github.com/liferay/liferay-screens/blob/master/android/library/src/main/java/com/liferay/mobile/screens/base/list/BaseListListener.java). 
 Therefore, Image Gallery Screenlet's listener methods are as follows: 
@@ -105,8 +105,13 @@ Therefore, Image Gallery Screenlet's listener methods are as follows:
 - `onImageUploadEnd(ImageEntry entry)`: Called when an item finishes uploading. 
 
 - `showUploadImageView(String actionName, String picturePath, int screenletId)`: 
-  Called when the View for uploading an image is going to be displayed. The default behaviour is to show a default view in a dialog. You only have to change this method if you want to change this behaviour.
-  For example if you want to present the upload detail view in other activity. You have to return true if you dont want the default behaviour.
+  Called when the View for uploading an image is going to be displayed. The 
+  default behavior is to show a default View in a dialog. You only have to 
+  change this method if you want to change this behavior. For example, if you 
+  want to present the upload detail view in other activity. You have to return 
+  true if you dont want the default behavior. 
 
 - `provideImageUploadDetailView()`: Called when the View for uploading an image 
-  is initialized. This method allows you to change the default view, you have to create a new view that extends from `BaseDetailUploadView` and return the layout identifier from your new view.
+  is initialized. This method lets you to change the default View. To do so, you 
+  must create a new View that extends from `BaseDetailUploadView` and return the 
+  layout identifier from your new view. 
