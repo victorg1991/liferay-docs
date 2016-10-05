@@ -24,11 +24,11 @@ methods, and shows how to set up communication with Liferay. Onward!
 ## Requirements [](id=requirements)
 
 Liferay Screens for iOS includes the Component Library (the Screenlets) and
-four sample projects, written in Swift. Screens was developed using Swift and
-development techniques that leverage functional Swift code and the
-[Model View Presenter](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter)
-architecture. You can use Swift or Objective-C with Screens, and you can run
-Screens apps on iOS 8 and above--Screens doesn't use iOS 9 APIs.
+four sample projects written in Swift. Screens is developed using Swift and 
+development techniques that leverage functional Swift code and the 
+[Model View Presenter](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter) 
+architecture. You can use Swift or Objective-C with Screens, and you can run 
+Screens apps on iOS 8 and above--Screens doesn't use iOS 9 APIs. 
 
 Liferay Screens for iOS requires the following software: 
 
@@ -76,10 +76,10 @@ next section and follow the instructions in the final section.
 
 ## Manual Configuration [](id=manual-configuration)
 
-it for Liferay Screens. First, you must download 
-Liferay Screens [source code](https://github.com/liferay/liferay-screens/releases) 
-and include it in your project. Follow these steps: 
-There are a few things you need to setup manually in your iOS 8 app to prepare
+There are a few things you need to setup manually in your iOS 8 app to prepare 
+it for Liferay Screens. First, you must download the Liferay Screens 
+[source code](https://github.com/liferay/liferay-screens/releases) 
+and include it in your project. Follow these steps to do this: 
 
 1. Create a folder, (e.g., called `Liferay-Screens`) at the root of your
    project. 
@@ -163,14 +163,14 @@ In your project's build settings, you must edit its
 ### Troubleshooting Manual Installation [](id=troubleshooting-manual-installation)
 
 There are some problems associated with the manual installation procedure. For
-example, when using a Screenlet in your project, the Interface Builder may
-complain about an unknown class. This error occurs because the Screenlet is bound
-to the `LiferayScreens` Module. This module exists only if you installed Screens
-with CocoaPods. To solve this problem, you must open the failed `xib` file
-listed in the error trace (in Figure 4, this is `LoginView_default.xib`), select
-the root View, and then re-set the Custom Class. Note that the Module value
-changes from `LiferayScreens` to blank; the Module values shows as the
-grayed-out text `Current - your app name`.
+example, when using a Screenlet in your project, Interface Builder may complain 
+about an unknown class. This error occurs because the Screenlet is bound to the 
+`LiferayScreens` Module. This module exists only if you installed Screens with 
+CocoaPods. To solve this problem, you must open the failed XIB file listed in 
+the error trace (in Figure 4, this is `LoginView_default.xib`), select the root 
+View, and then reset the Custom Class. Note that the Module value changes from 
+`LiferayScreens` to blank; the Module value shows as the grayed-out text 
+`Current - your app name`. 
 
 ![Figure 4: When using a Screenlet with Screens installed manually, you may get an exception due to an unknown class in Interface Builder.](../../../images/screens-ios-xcode-unknown-class.png)
 
