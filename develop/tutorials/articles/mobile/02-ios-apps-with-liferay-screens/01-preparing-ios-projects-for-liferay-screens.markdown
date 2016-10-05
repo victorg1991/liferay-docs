@@ -14,9 +14,9 @@ project is more challenging; don't worry, though! It's still not horribly
 complicated. 
 
 Note: since Screens for iOS is written in Swift, you need to use CocoaPods
-version 0.36 or higher. Refer to [this
-article](http://blog.cocoapods.org/CocoaPods-0.36/) for more details about how
-CocoaPods works with Swift dependencies. 
+version 0.36 or higher. Refer to 
+[this article](http://blog.cocoapods.org/CocoaPods-0.36/) 
+for more details about how CocoaPods works with Swift dependencies. 
 
 This tutorial specifies Screens's requirements, shows you both configuration
 methods, and shows how to set up communication with Liferay. Onward! 
@@ -64,7 +64,8 @@ Your final `Podfile` should look like this:
     
     # the rest of your Podfile
 
-You can also use [this `Podfile`](https://github.com/liferay/liferay-screens/blob/master/ios/Samples/Showcase-swift/Podfile) 
+You can also use 
+[this `Podfile`](https://github.com/liferay/liferay-screens/blob/master/ios/Samples/Showcase-swift/Podfile) 
 as a template.
 
 Next, in your terminal, install Liferay Screens by executing `pod install` from
@@ -120,7 +121,8 @@ directory and execute `pod install`. To open your project, use the
 
 The
 [CocoaPods for Xcode plugin](https://github.com/kattrali/cocoapods-xcode-plugin) 
-that you can install with the [Alcatraz package manager](http://alcatraz.io/) 
+that you can install with the 
+[Alcatraz package manager](http://alcatraz.io/) 
 can perform these tasks from Xcode. 
 
 ![Figure 2: You can perform Xcode tasks with the CocoaPods for Xcode plugin helps.](../../../images/screens-ios-xcode-cocoapods.png)
