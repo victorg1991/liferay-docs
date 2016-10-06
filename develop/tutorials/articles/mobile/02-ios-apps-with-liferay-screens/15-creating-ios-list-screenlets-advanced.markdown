@@ -336,15 +336,11 @@ Next, you'll create the layout.
 
 ### Creating the layout
 
-<!-- 
-Where is this done? Inside the same View class?
--->
 The layout object is a fundamental part of `UICollectionView`. This object 
 controls the position of the elements, their size, and more. You can customize 
-this object in your View by overriding the `doCreateLayout` method. For example, 
-the `doCreateLayout` method in Bookmark List Screenlet's View uses 
-`UICollectionViewFlowLayout` as its layout object. This is a basic layout that 
-gives you a simple way to customize things like item size, spacing between 
+this object in your View by overriding the `doCreateLayout` method in your
+View's class. For example, the `doCreateLayout` method in Bookmark List
+Screenlet's View uses `UICollectionViewFlowLayout` as its layout object. This is a basic layout that gives you a simple way to customize things like item size, spacing between 
 items, scroll direction, and more. This layout is then used to set the item's 
 size and spacing: 
 
