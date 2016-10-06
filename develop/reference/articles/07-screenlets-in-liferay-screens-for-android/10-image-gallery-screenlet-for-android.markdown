@@ -61,7 +61,7 @@ the Screenlet:
 | `firstPageSize` | `number` | The number of items to display on the first page. The default value is `50`. |
 | `pageSize` | `number` | The number of items to display on second and subsequent pages. The default value is `25`. |
 | `mimeTypes` | `string` | The comma-separated list of MIME types for the Screenlet to support. |
-| `autoLoad` | `boolean` | Whether the list should automatically load when the Screenlet appears in the app's UI. The default value is `true`. |
+| `autoLoad` | `boolean` | Whether the list automatically loads when the Screenlet appears in the app's UI. The default value is `true`. |
 | `layoutId` | `@layout` | The layout to use to show the View. |
 | `obcClassName` | `string` | The name of the `OrderByComparator` class to use to sort the results. Omit this property if you don't want to sort the results. Note that you can only use comparator classes that extend `OrderByComparator<DLFileEntry>`. Liferay contains no such comparator classes. You must therefore create your own by extending `OrderByComparator<DLFileEntry>`. To see examples of some comparator classes that extend other Document Library classes, [click here](https://github.com/liferay/liferay-portal/tree/master/portal-impl/src/com/liferay/portlet/documentlibrary/util/comparator). |
 
