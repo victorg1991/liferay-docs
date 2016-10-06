@@ -142,21 +142,12 @@ to implement the sort. For example, Liferay's
 [`EntryURLComparator` class](https://github.com/liferay/liferay-portal/blob/7.0.x/modules/apps/collaboration/bookmarks/bookmarks-api/src/main/java/com/liferay/bookmarks/util/comparator/EntryURLComparator.java) 
 sorts bookmarks in the Bookmarks app by URL. 
 
-<!-- 
-Do Screenlet developers have to add support for the `obcClassName` 
-property? If so, how? 
--->
 To use the comparator, you must set the list Screenlet's `obcClassName` property 
 to the comparator's fully qualified class name. You do this in Interface Builder 
 when inserting the Screenlet in an app, just as you would set any other 
 Screenlet property. 
-<!--
-"If you want to set this comparator, you must add the full className in your 
-`@IBInspectable` property named `obcClassName`."
 
-Does this have to be done in one of the Screenlet's classes? If so, we should 
-include example code.
--->
+![Figure 2: Set the property in Interface Builder.](../../../images/screens-ios-obc-ib.png)
 
 For example, to set Bookmark List Screenlet to sort its results by URL, you must 
 set `obcClassName` to 
@@ -219,7 +210,7 @@ content is a bit different than usual:
    the cell in Bookmark List Screenlet's custom View. It's a simple square that 
    displays the bookmark's URL and the URL's first letter. 
 
-    ![Figure 1: The XIB file for the cell in Bookmark List Screenlet's custom View.](../../../images/screens-ios-collectionview-cell.png)
+    ![Figure 3: The XIB file for the cell in Bookmark List Screenlet's custom View.](../../../images/screens-ios-collectionview-cell.png)
 
 2. Create your XIB file's class by extending `UICollectionViewCell`. In this 
    class, create as many outlets and actions for your UI components as you need. 
