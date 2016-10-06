@@ -154,7 +154,6 @@ set `obcClassName` to
 `"com.liferay.bookmarks.util.comparator.EntryURLComparator"`. 
 
 Be careful because `obcClassName` is different in 6.2 and 7.0 version. 
-<!-- How is this property different between 6.2 and 7.0? -->
 
 ## Create Sections for Your List
 
