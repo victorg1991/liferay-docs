@@ -82,26 +82,28 @@ your custom cell. For example, Bookmark List Screenlet does this in its
           tableView?.registerNib(nib, forCellReuseIdentifier: BookmarkCellId)
     }
 
-Note that this uses the constant `let BookmarkCellId = "bookmarkCell"` instead 
-of a hardcoded string, as suggested in the 
+Note that this uses the constant `BookmarkCellId` instead of a hardcoded string, 
+as suggested in the 
 [Avoid Hard Coded Elements](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hard-coded-elements)
 section of 
 [the best practices tutorial](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
 
-Next, also in your `*ListView_mytheme` class override the `doGetCellId` method
+Next, also in your `*ListView_mytheme` class, override the `doGetCellId` method
 to get the cell ID for each row. For example, this method in Bookmark List
-Screenlet returns the previous string constant:
+Screenlet's `BookmarkListView_default-custom` class returns the previous string 
+constant: 
 
     override public func doGetCellId(row row: Int, object: AnyObject?) -> String {
         return BookmarkCellId
     }
 
-To fill the cell with the row's data, override the `doFillLoadedCell` method of
-your `*ListView_mytheme` class. Note that this method isn't called for
-in-progress cells; it's only called for cells with data. Also note that the
-source data is stored in the method's `object` argument. This is a generic
-object that you must cast to the specific element type. For example, Bookmark
-List Screenlet's `doFillLoadedCell` method casts the `object` argument to a
+To fill the cell with the row's data, override the `doFillLoadedCell` method in 
+your `*ListView_mytheme` class. Note that this method isn't called for 
+in-progress cells; it's only called for cells with data. Also note that the 
+source data is stored in the method's `object` argument. This is a generic 
+object that you must cast to the specific element type. For example, the 
+`doFillLoadedCell` method in Bookmark List Screenlet's 
+`BookmarkListView_default-custom` class casts the `object` argument to a 
 `Bookmark`. It then sets the `Bookmark` as the cell's bookmark: 
 
     override public func doFillLoadedCell(row row: Int, cell: UITableViewCell, object:AnyObject) {
@@ -116,8 +118,9 @@ and
 [`UITableViewDataSource` protocol](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITableViewDataSource_Protocol/) 
 methods available to you in your `*ListView_mytheme` class, so you can override
 any of them if you need to (check first to make sure they're not already
-overridden). For example, Bookmark List Screenlet implement's the following
-method to use a different cell height for one row:
+overridden). For example, Bookmark List Screenlet's 
+`BookmarkListView_default-custom` class implements the following method to use a 
+different cell height for one row: 
 
     public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 80
@@ -145,15 +148,15 @@ sorts bookmarks in the Bookmarks app by URL.
 To use the comparator, you must set the list Screenlet's `obcClassName` property 
 to the comparator's fully qualified class name. You do this in Interface Builder 
 when inserting the Screenlet in an app, just as you would set any other 
-Screenlet property. 
+Screenlet property. For example, to set Bookmark List Screenlet to sort its 
+results by URL, you must set *Obc Class Name* to 
+*com.liferay.bookmarks.util.comparator.EntryURLComparator* in Interface Builder: 
 
-![Figure 2: Set the property in Interface Builder.](../../../images/screens-ios-obc-ib.png)
+![Figure 2: To use a comparator, set the *Obc Class Name* property in Interface Builder to the comparator's fully qualified class name.](../../../images/screens-ios-obc-ib.png)
 
-For example, to set Bookmark List Screenlet to sort its results by URL, you must 
-set `obcClassName` to 
-`"com.liferay.bookmarks.util.comparator.EntryURLComparator"`. 
-
-Be careful because `obcClassName` is different in 6.2 and 7.0 version. 
+Note that Liferay's comparator classes can change between Liferay versions. If 
+you're using one of these comparators, make sure you specify the one that 
+matches your Liferay instance's version. 
 
 ## Create Sections for Your List
 
@@ -284,8 +287,7 @@ For example, Bookmark List Screenlet's XIB file and View class are
 After creating your XIB, create your View class as indicated in step two above. 
 For example, here's Bookmark List Screenlet's View class declaration: 
 
-    public class BookmarkListView_default_collection : BaseListCollectionView {
-    }
+    public class BookmarkListView_default_collection : BaseListCollectionView {...
 
 In Interface Builder, set this new class as your XIB's Custom Class, and assign 
 an outlet to your `UICollectionView` component. Then register the cell you 
@@ -295,9 +297,9 @@ created in the previous section. To do this, you must override the
 instance, and then register it to your collection view outlet. For example, the 
 `doRegisterCellNibs` method in `BookmarkListView_default_collection` creates a 
 `UINib` instance and registers it to its `UICollectionView` outlet 
-(`collectionView`). Also note that this method uses the constant 
-`let BookmarkCellId = "bookmarkCell"` for its cell reuse ID, instead of a 
-hardcoded string. This is suggested in the 
+(`collectionView`). Also note that this method uses the `BookmarkCellId` 
+constant for its cell reuse ID, instead of a hardcoded string. This is suggested 
+in the 
 [Avoid Hard Coded Elements](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hard-coded-elements)
 section of 
 [the best practices tutorial](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices): 
@@ -334,13 +336,15 @@ content. This method is executed once for each object received from the server:
 
 Next, you'll create the layout. 
 
-### Creating the layout
+### Creating the Layout
 
 The layout object is a fundamental part of `UICollectionView`. This object 
 controls the position of the elements, their size, and more. You can customize 
-this object in your View by overriding the `doCreateLayout` method in your
-View's class. For example, the `doCreateLayout` method in Bookmark List
-Screenlet's View uses `UICollectionViewFlowLayout` as its layout object. This is a basic layout that gives you a simple way to customize things like item size, spacing between 
+this object in your View by overriding the `doCreateLayout` method in your 
+View class. For example, the `doCreateLayout` method in Bookmark List 
+Screenlet's View class (`BookmarkListView_default_collection`) uses 
+`UICollectionViewFlowLayout` as its layout object. This is a basic layout that 
+gives you a simple way to customize things like item size, spacing between 
 items, scroll direction, and more. This layout is then used to set the item's 
 size and spacing: 
 
