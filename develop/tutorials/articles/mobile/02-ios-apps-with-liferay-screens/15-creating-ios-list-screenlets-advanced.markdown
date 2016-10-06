@@ -69,10 +69,17 @@ Now you're ready to implement your Theme's functionality. In your
 your custom cell. For example, Bookmark List Screenlet does this in its 
 `BookmarkListView_default-custom` class: 
 
-    public override func doRegisterCellNibs() {
-        let nib = UINib(nibName: "BookmarkCell_default-custom", bundle: NSBundle.mainBundle())
+    public class BookmarkListView_default_custom: BookmarkListView_default {
 
-        tableView?.registerNib(nib, forCellReuseIdentifier: BookmarkCellId)
+      let BookmarkCellId = "bookmarkCell"
+
+
+      //MARK: BaseListTableView
+
+      public override func doRegisterCellNibs() {
+          let nib = UINib(nibName: "BookmarkCell_default-custom", bundle: NSBundle.mainBundle())
+
+          tableView?.registerNib(nib, forCellReuseIdentifier: BookmarkCellId)
     }
 
 Note that this uses the constant `let BookmarkCellId = "bookmarkCell"` instead 
@@ -80,11 +87,6 @@ of a hardcoded string, as suggested in the
 [Avoid Hardcoded Strings](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hardcoded-strings)
 section of 
 [the best practices tutorial](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
-<!-- 
-This constant isn't created anywhere in the above code. If you show a constant 
-or variable being used, you have to show it being created... otherwise, it's 
-confusing.
--->
 
 Next, override the `doGetCellId` method to get the cell ID for each row. For 
 example, this method in Bookmark List Screenlet returns the previous string 
