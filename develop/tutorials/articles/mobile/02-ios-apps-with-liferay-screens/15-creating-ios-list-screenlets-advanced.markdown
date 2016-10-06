@@ -283,11 +283,9 @@ For example, Bookmark List Screenlet's XIB file and View class are
 
 After creating your XIB, create your View class as indicated in step two above. 
 For example, here's Bookmark List Screenlet's View class declaration: 
-<!-- 
-Provide the complete code for this View class
--->
 
-    public class BookmarkListView_default_collection : BaseListCollectionView { ...
+    public class BookmarkListView_default_collection : BaseListCollectionView {
+    }
 
 In Interface Builder, set this new class as your XIB's Custom Class, and assign 
 an outlet to your `UICollectionView` component. Then register the cell you 
@@ -303,12 +301,8 @@ hardcoded string. This is suggested in the
 [Avoid Hardcoded Strings](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hardcoded-strings)
 section of 
 [the best practices tutorial](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices): 
-<!-- 
-This constant isn't created anywhere in the above code. If you show a constant 
-or variable being used, then you have to show it being created... otherwise, 
-it's confusing. The same goes for collectionView... show this outlet being 
-created in the code.
--->
+
+    let BookmarkCellId = "bookmarkCell"
 
     public override func doRegisterCellNibs() {
         let cellNib = UINib(nibName: "BookmarkCell_default-collection", bundle: nil)
