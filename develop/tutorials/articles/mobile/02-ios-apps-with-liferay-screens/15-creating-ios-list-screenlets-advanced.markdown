@@ -88,23 +88,21 @@ of a hardcoded string, as suggested in the
 section of 
 [the best practices tutorial](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
 
-Next, override the `doGetCellId` method to get the cell ID for each row. For 
-example, this method in Bookmark List Screenlet returns the previous string 
-constant:
-<!-- In which class should this be done? -->
+Next, also in your `*ListView_mytheme` class override the `doGetCellId` method
+to get the cell ID for each row. For example, this method in Bookmark List
+Screenlet returns the previous string constant:
 
     override public func doGetCellId(row row: Int, object: AnyObject?) -> String {
         return BookmarkCellId
     }
 
-To fill the cell with the row's data, override the `doFillLoadedCell` method.
-Note that this method isn't called for in-progress cells; it's only called for
-cells with data. Also note that the source data is stored in the method's
-`object` argument. This is a generic object that you must cast to the specific
-element type. For example, Bookmark List Screenlet's `doFillLoadedCell` method 
-casts the `object` argument to a `Bookmark`. It then sets the `Bookmark` as the 
-cell's bookmark: 
-<!-- In which class should this be done? -->
+To fill the cell with the row's data, override the `doFillLoadedCell` method of
+your `*ListView_mytheme` class. Note that this method isn't called for
+in-progress cells; it's only called for cells with data. Also note that the
+source data is stored in the method's `object` argument. This is a generic
+object that you must cast to the specific element type. For example, Bookmark
+List Screenlet's `doFillLoadedCell` method casts the `object` argument to a
+`Bookmark`. It then sets the `Bookmark` as the cell's bookmark: 
 
     override public func doFillLoadedCell(row row: Int, cell: UITableViewCell, object:AnyObject) {
         if let bookmarkCell = cell as? BookmarkCell_default_custom, bookmark = object as? Bookmark {
@@ -116,11 +114,10 @@ Remember that you also have the typical
 [`UITableViewDelegate` protocol](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITableViewDelegate_Protocol/) 
 and 
 [`UITableViewDataSource` protocol](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITableViewDataSource_Protocol/) 
-methods available to you, so you can override any of them if you need to (check
-first to make sure they're not already overridden). For example, Bookmark List 
-Screenlet implement's the following method to use a different cell height for 
-one row:
-<!-- In which class should this be done? -->
+methods available to you in your `*ListView_mytheme` class, so you can override
+any of them if you need to (check first to make sure they're not already
+overridden). For example, Bookmark List Screenlet implement's the following
+method to use a different cell height for one row:
 
     public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 80
