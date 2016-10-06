@@ -30,7 +30,6 @@ for details.
 - None
 
 ## Views [](id=views)
-<!-- Review my changes to this section -->
 
 - Default
 - Material
@@ -51,13 +50,12 @@ This Screenlet can also render other Screenlets:
 
 These Screenlets can also be used alone without Asset Display Screenlet.
 
-For information on other ways to display images, videos, audio files, and PDFs, 
-[see Base File Display Screenlet](/develop/reference/-/knowledge_base/7-0/base-file-display-screenlet-for-android).
-
 ## Offline [](id=offline)
 
 This Screenlet supports offline mode so it can function without a network 
-connection. 
+connection. For more information on how offline mode works, see the 
+[tutorial its architecture](/develop/tutorials/-/knowledge_base/7-0/architecture-of-offline-mode-in-liferay-screens). 
+Here are the offline mode policies that you can use with this Screenlet: 
 
 | Policy | What happens | When to use |
 |--------|--------------|-------------|
@@ -79,54 +77,61 @@ If you don't use `entryId`, you must use both of the following attributes:
 
 | Attribute | Data type | Explanation |
 |-----------|-----------|-------------|
-| `layoutId` | `@layout` | The layout to use to show the View.|
-| `autoLoad` | `boolean` | Whether the list should automatically load when the Screenlet appears in the app's UI. The default value is `true`. |
-| `entryId` | `number` | The primary key parameter for displaying the `Asset`. | 
-| `className` | `string` | The class name of the `Asset` that we want to render. It's required when we are instantiating the screenlet with `className` and `classPK`. For example, if we want show a blog entry, for `BlogsEntry` object in Liferay 7.0 version, its `className` is [`com.liferay.blogs.kernel.model.BlogsEntry`](https://github.com/liferay/liferay-portal/blob/master/portal-kernel/src/com/liferay/blogs/kernel/model/BlogsEntry.java). |
-| `classPK` | `number` | This is the asset identifier and it's unique. This attribute is used only with `className`. |
-| `cachePolicy` | `string` | Offline mode type. See [Offline](#offline) section. |
-| `imageLayoutId` | `@layout` | The layout to use to show an image. |
-| `videoLayoutId` | `@layout` | The layout to use to show a video. |
-| `audioLayoutId` | `@layout` | The layout to use to show an audio. |
-| `pdfLayoutId` | `@layout` | The layout to use to show a PDF. |
-| `blogsLayoutId` | `@layout` | The layout to use to show a `BlogsEntry`. |
-| `webDisplayLayoutId` | `@layout` | The layout to use to show a `WebContent`. |
+| `layoutId` | `@layout` | The layout to use to show the View. |
+| `autoLoad` | `boolean` | Whether the asset automatically loads when the Screenlet appears in the app's UI. The default value is `true`. |
+| `entryId` | `number` | The primary key of the asset. | 
+| `className` | `string` | The asset's fully qualified class name. For example, a blog entry's `className` is [`com.liferay.blogs.kernel.model.BlogsEntry`](https://docs.liferay.com/portal/7.0/javadocs/portal-kernel/com/liferay/blogs/kernel/model/BlogsEntry.html). The `className` and `classPK` attributes are required to instantiate the Screenlet. |
+| `classPK` | `number` | The asset’s unique identifier. The `className` and `classPK` attributes are required to instantiate the Screenlet. |
+| `cachePolicy` | `string` | The offline mode setting. See [the Offline section](/develop/reference/-/knowledge_base/7-0/asset-display-screenlet-for-android#offline) for details. |
+| `imageLayoutId` | `@layout` | The layout to use to show an image (`DLFileEntry`). |
+| `videoLayoutId` | `@layout` | The layout to use to show a video (`DLFileEntry`). |
+| `audioLayoutId` | `@layout` | The layout to use to show an audio file (`DLFileEntry`). |
+| `pdfLayoutId` | `@layout` | The layout to use to show a PDF (`DLFileEntry`). |
+| `blogsLayoutId` | `@layout` | The layout to use to show a blog entry (`BlogsEntry`). |
+| `webDisplayLayoutId` | `@layout` | The layout to use to show a web content article (`WebContent`). |
 
 ## Listener [](id=listener)
 
-The `AssetDisplayScreenlet` delegates some events to a class that implements `BaseCacheListener` named `AssetDisplayListener` and lets you implement the following methods:
+Asset Display Screenlet delegates some events to a class that implements 
+`AssetDisplayListener`. This interface lets you implement the following methods: 
 
-- `onRetrieveAssetSuccess(AssetEntry assetEntry)`: Called when the operation finished successfully and the asset has been loaded.
+- `onRetrieveAssetSuccess(AssetEntry assetEntry)`: Called when the Screenlet 
+  successfully loads the asset. 
 
-Also, exists another listener called `AssetDisplayInnerScreenletListener` for configuring child screenlet (the screenlet which will be rendered inside `AssetDisplayScreenlet`) or render a custom `Asset`:
+A second listener, `AssetDisplayInnerScreenletListener`, also exists for 
+configuring a child Screenlet (the Screenlet rendered inside Asset Display 
+Screenlet) or rendering a custom asset. 
 
-- `onConfigureChildScreenlet(AssetDisplayScreenlet screenlet, BaseScreenlet innerScreenlet, AssetEntry assetEntry)`: Called when the child screenlet has been created successfully and we want to configure or customize it. For example:
+- `onConfigureChildScreenlet(AssetDisplayScreenlet screenlet, BaseScreenlet innerScreenlet, AssetEntry assetEntry)`: 
+  Called when the child Screenlet has been successfully initialized. Use this 
+  method to configure or customize the child Screenlet. The example 
+  implementation here sets the child Screenlet's background color to light gray 
+  if the asset is a blog entry entity (`BlogsEntry`): 
 
-	```
-	@Override
-	public void onConfigureChildScreenlet(AssetDisplayScreenlet screenlet,
-		BaseScreenlet innerScreenlet, AssetEntry assetEntry) {
-		if ("blogsEntry".equals(assetEntry.getObjectType())) {
-			innerScreenlet.setBackgroundColor(ContextCompat.getColor(this,
-				R.color.light_gray));
-		}
-	}
-	
-- `onRenderCustomAsset(AssetEntry assetEntry)`: Called when we want to render a custom `Asset`. For example:
+        @Override
+        public void onConfigureChildScreenlet(AssetDisplayScreenlet screenlet,
+            BaseScreenlet innerScreenlet, AssetEntry assetEntry) {
+                if ("blogsEntry".equals(assetEntry.getObjectType())) {
+                    innerScreenlet.setBackgroundColor(ContextCompat.getColor(this,
+                    R.color.light_gray));
+                }
+        }
 
-	```
-	@Override
-	public View onRenderCustomAsset(AssetEntry assetEntry) {
-		if (assetEntry instanceof User) {
-			View view = getLayoutInflater().inflate(R.layout.user_display, null);
-			User user = (User) assetEntry;
+- `onRenderCustomAsset(AssetEntry assetEntry)`: Called to render a custom asset. 
+  The following example implementation inflates and returns the custom View 
+  necessary to render a user from a Liferay instance (`User`): 
 
-			TextView username = (TextView)
-				view.findViewById(R.id.liferay_username);
+        @Override
+        public View onRenderCustomAsset(AssetEntry assetEntry) {
+            if (assetEntry instanceof User) {
+                View view = getLayoutInflater().inflate(R.layout.user_display, null);
+                User user = (User) assetEntry;
 
-			username(user.getUsername());
-			
-			return view;
-		}
-		return null;
-	}
+                TextView username = (TextView) view.findViewById(R.id.liferay_username);
+
+                username(user.getUsername());
+
+                return view;
+            }
+            return null;
+        }
