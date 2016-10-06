@@ -84,7 +84,7 @@ your custom cell. For example, Bookmark List Screenlet does this in its
 
 Note that this uses the constant `let BookmarkCellId = "bookmarkCell"` instead 
 of a hardcoded string, as suggested in the 
-[Avoid Hardcoded Strings](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hardcoded-strings)
+[Avoid Hard Coded Elements](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hard-coded-elements)
 section of 
 [the best practices tutorial](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices).
 
@@ -298,7 +298,7 @@ instance, and then register it to your collection view outlet. For example, the
 (`collectionView`). Also note that this method uses the constant 
 `let BookmarkCellId = "bookmarkCell"` for its cell reuse ID, instead of a 
 hardcoded string. This is suggested in the 
-[Avoid Hardcoded Strings](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hardcoded-strings)
+[Avoid Hard Coded Elements](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hard-coded-elements)
 section of 
 [the best practices tutorial](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices): 
 

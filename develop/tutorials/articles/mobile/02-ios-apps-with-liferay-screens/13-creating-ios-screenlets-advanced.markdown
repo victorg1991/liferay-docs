@@ -82,7 +82,7 @@ Now you could follow the [Creating iOS Themes](/develop/tutorials/-/knowledge_ba
 
 ## Adding Another Use Case [](id=ios-adding-another-use-case)
 
-Is also typical to have a Screenlet which has many use cases. In order to handle this situation you'll need to create one `Interactor` class for each use case and return them in the `createInteractor` method of your Screenlet's class. Remember, each action name will be given by the `restorationId` of the UI components that trigger them. Also, as specified in the [Avoid Hardcoded Strings](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hardcoded-strings) chapter of the [Best Practices](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices), you should set this `restorationId` from code by using a constant defined in your Screenlet's class.
+Is also typical to have a Screenlet which has many use cases. In order to handle this situation you'll need to create one `Interactor` class for each use case and return them in the `createInteractor` method of your Screenlet's class. Remember, each action name will be given by the `restorationId` of the UI components that trigger them. Also, as specified in the [Avoid Hard Coded Elements](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices#avoid-hard-coded-elements) chapter of the [Best Practices](/develop/tutorials/-/knowledge_base/7-0/ios-best-practices), you should set this `restorationId` from code by using a constant defined in your Screenlet's class.
 
 For example, if we want to add an action to our `AddBookmarkScreenlet` for retrieving the title of an URL inserted by the user we'll have to follow these steps:
 

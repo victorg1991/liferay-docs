@@ -83,11 +83,12 @@ this view, the default suffix should be *"_default"*.
     Default/ActionView_default
     Blue/ActionView_blue
 
-## Avoid Hard Coded Strings [](id=avoid-hardcoded-strings)
+## Avoid Hard Coded Elements [](id=avoid-hard-coded-elements)
 
-Bugs in hard coded strings are really difficult to track down so you should avoid
+Bugs in hard coded elements are really difficult to track down so you should avoid
 using them. And how to do that? By using constants. Whenever you need to use
-a hard coded string, you should put a String constant instead, as simply as that.
+a hard coded string, int, float... you should put a constant instead,
+as simply as that.
 
 A good example for this, is the name of the actions, which (if you follow the
 [Creating iOS Screenlets (Advanced) tutorial](/develop/tutorials/-/knowledge_base/7-0/creating-ios-screenlets-advanced#ios-adding-another-use-case))
@@ -99,7 +100,7 @@ inside the Interface Builder. For example:
 
 Instead of doing this:
 
-![Figure 1: Here what you shouldn't do.](../../../images/screens-ios-harcoded-strings.png)
+![Figure 1: Don't hard code restoration identifiers.](../../../images/screens-ios-harcoded-strings.png)
 
 Do this:
 
@@ -119,3 +120,32 @@ Do this:
 
         ...
     }
+
+Another good example would be the Screenlets `@IBInspectables` properties.
+Setting this properties directly in a Storyboard or a XIB file is great when you
+are testing, but, they are not so great when you are debugging why your
+Screenlet is using a wrong id. In order to avoid this kind of bugs, you should
+add all your ids, classnames... to the .plist file that sets the server context.
+You should be familiar with this file if you followed the
+[Configuring Communication with Liferay chapter](/develop/tutorials/-/knowledge_base/7-0/preparing-ios-projects-for-liferay-screens#configuring-communication-with-liferay)
+of the [Preparing iOS Projects for Liferay Screens](/develop/tutorials/-/knowledge_base/7-0/preparing-ios-projects-for-liferay-screens).
+
+So, for example, your .plist file could look like this:
+
+![Figure 2: Don't hard code ids inside IB.](../../../images/screens-ios-harcoded-ids.png)
+
+And how can you retrieve those ids? You can retrieve them by using the method
+`propertyForKey` of the class `LiferayServerContext`. For example, doing
+something like this:
+
+    @IBOutlet weak var imageGalleryScreenlet: ImageGalleryScreenlet? {
+        didSet {
+            imageGalleryScreenlet?.delegate = self
+            imageGalleryScreenlet?.presentingViewController = self
+
+            imageGalleryScreenlet?.repositoryId = LiferayServerContext.groupId
+            if let folderId = LiferayServerContext.propertyForKey("galleryFolderId") as? NSNumber {
+                imageGalleryScreenlet?.folderId = folderId.longLongValue
+            }
+        }
+    } 
