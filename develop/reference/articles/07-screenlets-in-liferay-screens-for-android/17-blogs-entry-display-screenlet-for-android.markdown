@@ -6,8 +6,8 @@
 - Liferay 7.0 CE, Liferay DXP
 - Liferay Screens Compatibility Plugin
   ([CE](http://www.liferay.com/marketplace/-/mp/application/54365664) or 
-  [EE](http://www.liferay.com/marketplace/-/mp/application/54369726), 
-  depending on your portal edition). This app is preinstalled in Liferay 7.0 CE 
+  [DE](http://www.liferay.com/marketplace/-/mp/application/54369726), 
+  depending on your Liferay edition). This app is preinstalled in Liferay 7.0 CE 
   and Liferay DXP instances.
 
 ## Compatibility [](id=compatibility)
@@ -16,7 +16,8 @@
 
 ## Features [](id=features)
 
-Blogs Entry Display Screenlet displays a single blog entry. The blog entry could have a header image. If this image is not empty, an `ImageDisplayScreenlet` will be rendered.
+Blogs Entry Display Screenlet displays a single blog entry. Image Display 
+Screenlet renders any header image the blogs entry may have. 
 
 ## Module [](id=module)
 
@@ -24,27 +25,38 @@ Blogs Entry Display Screenlet displays a single blog entry. The blog entry could
 
 ## Views [](id=views)
 
-The Default View uses different elements to show a `BlogsEntry` such as `TextView`, `UserPortraitScreenlet`, etc. Other Views may use a different components to show the blog entry.
+- Default
+- Material
 
-![Figure 1: Base File Display Screenlet using the Default (`default`) Theme.](../../images/screens-android-blogsentrydisplay.png)
+The Default View can use different elements to show a blogs entry 
+(`BlogsEntry`). For example, it uses an Android `TextView` to show the blog's 
+text, and 
+[User Portrait Screenlet](/develop/reference/-/knowledge_base/7-0/userportraitscreenlet-for-android) 
+to show the profile picture of the Liferay user who posted it. 
+
+Note that other Views may use different components to show the blog entry. 
+
+![Figure 1: Blogs Entry Display Screenlet using the Default (left) and Material (right) Views.](../../images/screens-android-blogsentrydisplay.png)
 
 ## Offline [](id=offline)
 
 This Screenlet supports offline mode so it can function without a network 
-connection. 
+connection. For more information on how offline mode works, see the 
+[tutorial its architecture](/develop/tutorials/-/knowledge_base/7-0/architecture-of-offline-mode-in-liferay-screens). 
+Here are the offline mode policies that you can use with this Screenlet: 
 
 | Policy | What happens | When to use |
 |--------|--------------|-------------|
-| `REMOTE_ONLY` | The Screenlet loads the list from the portal. If a connection issue occurs, the Screenlet uses the listener to notify the developer about the error. If the Screenlet successfully loads the list, it stores the data in the local cache for later use. | Use this policy when you always need to show updated data, and show nothing when there's no connection. |
-| `CACHE_ONLY` | The Screenlet loads the list from the local cache. If the list isn't there, the Screenlet uses the listener to notify the developer about the error. | Use this policy when you always need to show local data, without retrieving remote information under any circumstance. |
-| `REMOTE_FIRST` | The Screenlet loads the list from the portal. If this succeeds, the Screenlet shows the list to the user and stores it in the local cache for later use. If a connection issue occurs, the Screenlet retrieves the list from the local cache. If the list doesn't exist there, the Screenlet uses the listener to notify the developer about the error. | Use this policy to show the most recent version of the data when connected, but show an outdated version when there's no connection. |
-| `CACHE_FIRST` | The Screenlet loads the list from the local cache. If the list isn't there, the Screenlet requests it from the portal and notifies the developer about any errors that occur (including connectivity errors). | Use this policy to save bandwidth and loading time in case you have local (but probably outdated) data. |
+| `REMOTE_ONLY` | The Screenlet loads the data from the Liferay instance. If a connection issue occurs, the Screenlet uses the listener to notify the developer about the error. If the Screenlet successfully loads the data, it stores it in the local cache for later use. | Use this policy when you always need to show updated data, and show nothing when there's no connection. |
+| `CACHE_ONLY` | The Screenlet loads the data from the local cache. If the data isn't there, the Screenlet uses the listener to notify the developer about the error. | Use this policy when you always need to show local data, without retrieving remote data under any circumstance. |
+| `REMOTE_FIRST` | The Screenlet loads the data from the Liferay instance. If this succeeds, the Screenlet shows the data to the user and stores it in the local cache for later use. If a connection issue occurs, the Screenlet retrieves the data from the local cache. If the data doesn't exist there, the Screenlet uses the listener to notify the developer about the error. | Use this policy to show the most recent version of the data when connected, but show an outdated version when there's no connection. |
+| `CACHE_FIRST` | The Screenlet loads the data from the local cache. If the data isn't there, the Screenlet requests it from the Liferay instance and notifies the developer about any errors that occur (including connectivity errors). | Use this policy to save bandwidth and loading time in case you have local (but probably outdated) data. |
 
 ## Required Attributes [](id=required-attributes)
 
 - `entryId`
 
-Or...
+If you don't use `entryId`, you must use both of the following attributes: 
 
 - `className`
 - `classPK`
@@ -54,14 +66,17 @@ Or...
 | Attribute | Data type | Explanation |
 |-----------|-----------|-------------|
 | `layoutId` | `@layout` | The layout to use to show the View.|
-| `autoLoad` | `boolean` | Whether the list should automatically load when the Screenlet appears in the app's UI. The default value is `true`. |
-| `entryId` | `number` | The primary key parameter for displaying the `BlogsEntry`. | 
-| `className` | `string` | The class name of the `Asset` that we want to render. It's always the same for `BlogsEntry` object, in Liferay 7.0 version, it's [`com.liferay.blogs.kernel.model.BlogsEntry`](https://github.com/liferay/liferay-portal/blob/master/portal-kernel/src/com/liferay/blogs/kernel/model/BlogsEntry.java). |
-| `classPK` | `number` | This is the asset identifier and it's unique. This attribute is used only with `className`. |
-| `cachePolicy` | `string` | Offline mode type. See [Offline](#offline) section. |
+| `autoLoad` | `boolean` | Whether the blog entry automatically loads when the Screenlet appears in the app's UI. The default value is `true`. |
+| `entryId` | `number` | The primary key of the blog entry (`BlogsEntry`). | 
+| `className` | `string` | The `BlogsEntry` object's fully qualified class name. This is [`com.liferay.blogs.kernel.model.BlogsEntry`](https://docs.liferay.com/portal/7.0/javadocs/portal-kernel/com/liferay/blogs/kernel/model/BlogsEntry.html). If you don't use `entryId`, the `className` and `classPK` attributes are required to instantiate the Screenlet. |
+| `classPK` | `number` | The `BlogsEntry` object's unique identifier. If you don't use `entryId`, the `className` and `classPK` attributes are required to instantiate the Screenlet. |
+| `cachePolicy` | `string` | The offline mode setting. See [the Offline section](/develop/reference/-/knowledge_base/7-0/blogs-entry-display-screenlet-for-android#offline) for details. |
 
 ## Listener [](id=listener)
 
-The `BlogsEntryDisplayScreenlet` delegates some events to a class that implements `BaseCacheListener` named `AssetDisplayListener` and lets you implement the following methods:
+Blogs Entry Display Screenlet delegates some events to a class that 
+implements `AssetDisplayListener`. This interface lets you implement the 
+following methods: 
 
-- `onRetrieveAssetSuccess(AssetEntry assetEntry)`: Called when the operation finished successfully and the asset has been loaded.
+- `onRetrieveAssetSuccess(AssetEntry assetEntry)`: Called when the Screenlet 
+  successfully loads the blog entry. 
