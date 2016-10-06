@@ -317,8 +317,7 @@ to register the cell. For example, the `doGetCellId` method in
         return BookmarkCellId
     }
 
-Next, you must override the methods in the View class that fill the table cells' 
-contents. First, override the `doFillLoadedCell` method to set the object to use 
+Next, you must override the `doFillLoadedCell` method to set the object to use 
 as the cell's contents. For example, the `doFillLoadedCell` method in 
 `BookmarkListView_default_collection` set a `Bookmark` object as the cell's 
 content. This method is executed once for each object received from the server: 
@@ -332,11 +331,6 @@ content. This method is executed once for each object received from the server:
             cell.bookmark = bookmark
         }
     }
-
-<!-- 
-What are the other methods? You said that there are methods (plural) that fill 
-the table cells' contents.
--->
 
 Next, you'll create the layout. 
 
