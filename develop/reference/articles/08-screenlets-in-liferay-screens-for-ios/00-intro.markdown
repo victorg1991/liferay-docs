@@ -67,7 +67,5 @@ reference documents:
   (document library files), `BlogsEntry` (blogs articles), and `WebContent` (web 
   content articles). You can also use it to display custom assets. 
 
-- [**File Display Screenlet:**](/develop/reference/-/knowledge_base/7-0/base-file-display-screenlet-for-ios) 
-  Displays a `DLFileEntry` object. This screenlet cannot be used alone, but rather, it's the superclass for [`ImageDisplayScreenlet`](https://github.com/liferay/liferay-screens/blob/feature/master/ios/Framework/Core/FileDisplay/ImageDisplayScreenlet.swift), [`VideoDisplayScreenlet`](https://github.com/liferay/liferay-screens/blob/feature/master/ios/Framework/Core/FileDisplay/VideoDisplayScreenlet.swift), [`AudioDisplayScreenlet`](https://github.com/liferay/liferay-screens/blob/feature/master/ios/Framework/Core/FileDisplay/AudioDisplayScreenlet.swift) and [`PdfDisplayScreenlet`](https://github.com/liferay/liferay-screens/blob/feature/master/ios/Framework/Core/FileDisplay/PdfDisplayScreenlet.swift).
-  
-- [**Blogs Entry Display Screenlet:**](/develop/reference/-/knowledge_base/7-0/blogs-entry-display-screenlet-for-ios) Shows a single blog entry.
+- [**Blogs Entry Display Screenlet:**](/develop/reference/-/knowledge_base/7-0/blogs-entry-display-screenlet-for-ios) 
+  Shows a single blog entry. 
