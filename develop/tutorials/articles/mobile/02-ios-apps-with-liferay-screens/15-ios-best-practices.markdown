@@ -148,4 +148,57 @@ something like this:
                 imageGalleryScreenlet?.folderId = folderId.longLongValue
             }
         }
-    } 
+    }
+
+## Pass the Necessary Information on Initializers [](id=pass-necessary-information-ios)
+
+You never should access variables that are not in your "layer", understanding by
+layer, the separation made for the library in the
+[Architecture of Liferay Screens](/develop/tutorials/-/knowledge_base/7-0/architecture-of-liferay-screens-for-ios).
+
+This means that, for example, you shouldn't access view variables from an
+Interactor. Instead you should send them from the Screenlet in the Interactor's
+initialization.
+
+    //Instead of something like this
+    public class MyInteractor: Interactor {
+        override func start() -> Bool {
+            if let view = self.screenlet.screenletView as? MyView {
+                let title = view.title
+                ...
+            }
+        }
+    }
+
+    //Do something like this
+    public class MyInteractor: Interactor {
+
+        public let title: String
+
+        //MARK: Initializer
+
+        public init(screenlet: BaseScreenlet, title: String) {
+            self.title = title
+            super.init(screenlet: screenlet)
+        }
+    }
+
+    public class MyScreenelt: BaseScreenlet {
+        override public func createInteractor(name name: String, sender: AnyObject?) -> Interactor? {
+            let interactor = MyInteractor(self, title: viewModel.title)
+            ...
+        }
+    }
+
+However, as you may have noticed from the previous example, they are some
+"places" when you can break this rule (otherwise it wouldn't be possible to
+interact between layers). Some of this "places" are:
+
+- The `createInteractor` method in the Screenlet class. Here you should access
+your view computed variables to get the input from the user. Also, when setting
+the `onSuccess` closure from the Interactor, you can retrieve the "result"
+object.
+- The `completedConnector` method of the `ServerConnectorInteractor`. In this
+method you can retrieve the "result" object from the associated Connector.
+- The different view model properties/methods inside the Screenlet class, in
+order to tell the view what to do.
