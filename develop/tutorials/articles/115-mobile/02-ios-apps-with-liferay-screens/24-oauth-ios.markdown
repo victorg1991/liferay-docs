@@ -42,9 +42,11 @@ Follow these steps to set and use `oauth2Redirect`:
         Note that `oauth2redirect` must be a string when setting the `loginMode` 
         property. 
 
-    -   In Interface Builder, as the value of the `loginMode` attribute. You set 
-        this in Interface Builder the same way you set other Screenlet 
-        attributes. 
+    -   In Interface Builder, as the value of the *Login Mode* attribute. You 
+        set this in Interface Builder the same way you set other Screenlet 
+        attributes (via the Attributes inspector, with the Screenlet selected in
+        the storyboard). Be sure to enter `oauth2redirect` with no period 
+        preceding it. 
 
 2.  Set Login Screenlet's `oauth2clientId` attribute to the ID of the OAuth 2 
     application. You can find this value in the portal's OAuth 2 Admin portlet. 
