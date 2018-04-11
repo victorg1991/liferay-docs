@@ -9,19 +9,21 @@ You can do this via
 Specifically, you must set the `loginMode` attribute's value to one of these 
 values, depending on the authentication type you want to use: 
 
--   `oauth2Redirect`: Redirects users to a page in their mobile browser where 
-    they must enter their credentials. Following login, the browser redirects 
-    users back to the mobile app. The app never accesses the credentials--it 
-    uses a token that can be easily revoked. User credentials therefore can't be 
-    compromised via the app. This type of authentication is also useful in cases 
-    where users might not want to enter their credentials in the app. For 
-    example, users may not want to enter their Twitter credentials directly in a 
-    3rd-party Twitter app, preferring to authenticate via Twitter's official 
-    site instead. Note that the site you redirect to for authentication must 
-    have OAuth 2 implemented. 
+-   `oauth2Redirect`: This specifies the 
+    [OAuth 2 Authorization Code grant](https://oauth.net/2/grant-types/authorization-code/). 
+    This redirects users to a page in their mobile browser where they must enter 
+    their credentials. Following login, the browser redirects users back to the 
+    mobile app. The app never accesses the credentials--it uses a token that can 
+    be easily revoked. User credentials therefore can't be compromised via the 
+    app. This type of authentication is also useful in cases where users may not 
+    want to enter their credentials in the app. For example, users may not want 
+    to enter their Twitter credentials directly in a 3rd-party Twitter app, 
+    preferring instead to authenticate via Twitter's official site. Note that 
+    the site you redirect to for authentication must have OAuth 2 implemented. 
 
--   `oauth2UsernameAndPassword`: Users authenticate by entering their 
-    credentials directly in the app. 
+-   `oauth2UsernameAndPassword`: This specifies the 
+    [OAuth 2 Resource Owner Password grant](https://oauth.net/2/grant-types/password/). 
+    Users authenticate by entering their credentials directly in the app. 
 
 The following sections describe how to implement these authentication types in 
 your app. 
