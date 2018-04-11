@@ -91,16 +91,16 @@ Here's an example of this workflow:
     the `AppDelegate` property you created in step 1. This example does this in 
     a `loginWithRedirect()` method: 
 
-    func loginWithRedirect() {
-        let session = LRSession(server: LiferayServerContext.server)
-        let redirectUrl = URL(string: "my-app://my-app")!
-        let clientIdRedirect = "54321"
+        func loginWithRedirect() {
+            let session = LRSession(server: LiferayServerContext.server)
+            let redirectUrl = URL(string: "my-app://my-app")!
+            let clientIdRedirect = "54321"
 
-        let authorizationFlow = LROAuth2SignIn.signIn(withRedirectURL: redirectUrl,
-            session: session, clientId: clientIdRedirect, scopes: [], callback: oauth2Callback)
+            let authorizationFlow = LROAuth2SignIn.signIn(withRedirectURL: redirectUrl,
+                session: session, clientId: clientIdRedirect, scopes: [], callback: oauth2Callback)
 
-        (UIApplication.shared.delegate as! AppDelegate).authorizationFlow = authorizationFlow
-    }
+            (UIApplication.shared.delegate as! AppDelegate).authorizationFlow = authorizationFlow
+        }
 
 4.  In your `AppDelegate`, call the `LROAuth2AuthorizationFlow` method 
     `resumeAuthorizationFlow` in the `application(_:open:options:)` method: 
