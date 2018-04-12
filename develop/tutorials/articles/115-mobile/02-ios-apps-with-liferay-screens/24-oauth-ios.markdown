@@ -4,14 +4,11 @@ Liferay Screens lets you use
 [OAuth 2](https://oauth.net/2/) 
 for authentication with 
 [Login Screenlet](/develop/reference/-/knowledge_base/7-0/loginscreenlet-for-ios). 
-You can do this via 
-[Login Screenlet's attributes](/develop/reference/-/knowledge_base/7-0/loginscreenlet-for-ios#attributes). 
-Specifically, you must set the `loginMode` attribute's value to one of these 
-values, depending on the authentication type you want to use: 
+You can use the following 
+[OAuth 2 grant types](https://oauth.net/2/grant-types/): 
 
--   `oauth2Redirect`: This specifies the 
-    [OAuth 2 Authorization Code grant](https://oauth.net/2/grant-types/authorization-code/). 
-    This redirects users to a page in their mobile browser where they must enter 
+-   [**Authorization Code (PKCE for native apps):**](https://oauth.net/2/grant-types/authorization-code/) 
+    Redirects users to a page in their mobile browser where they must enter 
     their credentials. Following login, the browser redirects users back to the 
     mobile app. The app never accesses the credentials--it uses a token that can 
     be easily revoked. User credentials therefore can't be compromised via the 
@@ -21,18 +18,22 @@ values, depending on the authentication type you want to use:
     preferring instead to authenticate via Twitter's official site. Note that 
     the site you redirect to for authentication must have OAuth 2 implemented. 
 
--   `oauth2UsernameAndPassword`: This specifies the 
-    [OAuth 2 Resource Owner Password grant](https://oauth.net/2/grant-types/password/). 
+-   [**Resource Owner Password:**](https://oauth.net/2/grant-types/password/) 
     Users authenticate by entering their credentials directly in the app. 
 
-The following sections describe how to implement these authentication types in 
-your app. 
+-   [**Client Credentials:**](https://oauth.net/2/grant-types/client-credentials/)
+    Authenticates without requiring user interaction. This is useful when the 
+    app needs to access its own resources, not those of a specific user. 
 
-## oauth2Redirect
+This tutorial shows you how to set all 3 of these OAuth 2 grant types. 
 
-Follow these steps to set and use `oauth2Redirect`: 
+## Authorization Code (PKCE)
 
-1.  First, you must set `oauth2Redirect`. There are 2 ways to do this: 
+Follow these steps to use the Authorization Code grant type with Login 
+Screenlet: 
+
+1.  First, you must set Login Screenlet's `loginMode` attribute to 
+    `oauth2Redirect`. There are 2 ways to do this: 
 
     -   In code, as the Login Screenlet instance's `authType` or `loginMode` 
         property:
@@ -69,12 +70,13 @@ Follow these steps to set and use `oauth2Redirect`:
 Note that you can cancel the authorization at any time by calling 
 `SessionContext.oauth2Cancel()`. 
 
-## oauth2UsernameAndPassword
+## Resource Owner Password
 
-Follow these steps to set and use `oauth2UsernameAndPassword`: 
+Follow these steps to use the Resource Owner Password grant type with Login 
+Screenlet: 
 
-1.  First, you must set `oauth2UsernameAndPassword`. There are 2 ways to do 
-    this: 
+1.  First, you must set Login Screenlet's `loginMode` attribute to 
+    `oauth2UsernameAndPassword`. There are 2 ways to do this: 
 
     -   In code, as the Login Screenlet instance's `authType` or `loginMode` 
         property:
@@ -97,7 +99,39 @@ Follow these steps to set and use `oauth2UsernameAndPassword`:
     the OAuth 2 application. You can find this value in the portal's OAuth 2 
     Admin portlet. 
 
-That's it! Now you know how to use OAuth 2 in Liferay Screens. 
+## Client Credentials
+
+The Client Credentials grant type in OAuth 2 authenticates without requiring 
+user interaction. This is useful when the app needs to access its own resources, 
+not those of a specific user. 
+
++$$$
+
+**Warning:** The Client Credentials grant type poses a security risk to the 
+portal. To use this grant type, the mobile app must contain the OAuth 2 
+application's client ID and client secret, which are used to authenticate 
+without user credentials. Anyone who can access those values via the mobile app 
+can also authenticate without user credentials. 
+
+$$$
+
+Follow these steps to use the Client Credentials grant type in your Screens app: 
+
+1.  Follow the 
+    [iOS Mobile SDK instructions]() 
+    for using the Client Credentials grant type. 
+
+2.  The session object's `authentication` property now contains a valid 
+    authentication object. Cast it to `LROAuth2Authentication` and pass the 
+    result to the `authentication` argument of the `SessionContext` method 
+    `loginWithOAuth2`: 
+
+        let auth = session.authentication as! LROAuth2Authentication
+
+        SessionContext.loginWithOAuth2(authentication: auth, userAttributes: [:])
+
+    This initializes the Screens `SessionContext` object, authenticating any 
+    Screenlets that you use in the iOS app. 
 
 ## Related Topics
 
