@@ -35,12 +35,12 @@ authenticate via the Authorization Code grant type, you must call the following
     LROAuth2SignIn.signIn(withRedirectURL: URL, session: LRSession, clientId: String, 
         scopes: [String], callback: (LRSession?, Error?) -> Void) -> LROAuth2AuthorizationFlow
 
-Here are this method's parameters: 
+Here are descriptions of this method's parameters: 
 
 -   `withRedirectURL`: the URL that the user is redirected to after successful 
-    login in the browser. You must also configure this URL in the portal via the 
-    OAuth 2 Admin portlet, and associate the URL with the application. 
-    <!-- Which application? -->
+    login in the browser. You must configure this URL in the portal via the 
+    OAuth 2 Admin portlet, and 
+    [associate the URL with the iOS app](https://developer.apple.com/documentation/uikit/core_app/communicating_with_other_apps_using_custom_urls). 
 -   `session`: The session that you want to authenticate. It must have the 
     server property set. 
     <!-- What server property? -->
@@ -62,17 +62,33 @@ as an `LROAuth2AuthorizationFlow` property in your `AppDelegate`. In your
 
 Here's an example of this workflow: 
 
-1.  In your `AppDelegate`, create the `LROAuth2AuthorizationFlow` property. This 
+1.  Configure the redirect URL in the portal via the OAuth 2 Admin portlet. In 
+    the portal, navigate to *Control Panel* &rarr; *OAuth 2 Admin* and select 
+    the OAuth 2 application you want to use. Then enter the redirect URL in the 
+    *Callback URIs* field. The redirect URL in this example is 
+    `my-app://my-app`. 
+
+    ![Figure 1: Enter the redirect URL in the OAuth 2 application in the portal.](../../../images/mobile-oauth2-redirect-url.png)
+
+2.  In your iOS app, register your redirect URL via the *Info* tab in your 
+    project's settings. For instructions on this, see the section *Register Your 
+    URL Scheme* in 
+    [Apple's documentation on using custom URLs](https://developer.apple.com/documentation/uikit/core_app/communicating_with_other_apps_using_custom_urls). 
+
+    ![Figure 2: Register the redirect URL in your iOS app.](../../../images/ios-register-url.png)
+
+3.  In your `AppDelegate`, create the `LROAuth2AuthorizationFlow` property. This 
     is the property that you'll set later when you call the 
     `LROAuth2SignIn.signIn` method:
 
         var authorizationFlow: LROAuth2AuthorizationFlow?
 
-2.  In the view controller in which you'll call `LROAuth2SignIn.signIn`, define 
+4.  In the view controller in which you'll call `LROAuth2SignIn.signIn`, define 
     the callback that runs with the authentication's result. In this example, if 
     the authentication succeeds, the callback prints a success message and calls 
     a sample method that tests the session's user credentials; otherwise it 
-    prints an error message: 
+    prints an error message. Note that your callback can perform any action you 
+    need it to: 
 
         let oauth2Callback: (LRSession?, Error?) -> Void = { session, error in
             if let session = session {
@@ -84,11 +100,9 @@ Here's an example of this workflow:
             }
         }
 
-    Keep in mind that your callback can perform any action you need it to. 
-
-3.  In the same view controller, call the `LROAuth2SignIn.signIn` method with 
+5.  In the same view controller, call the `LROAuth2SignIn.signIn` method with 
     the above parameters. Then set the resulting `LROAuth2AuthorizationFlow` to 
-    the `AppDelegate` property you created in step 1. This example does this in 
+    the `AppDelegate` property you created in step 3. This example does this in 
     a `loginWithRedirect()` method: 
 
         func loginWithRedirect() {
@@ -102,8 +116,11 @@ Here's an example of this workflow:
             (UIApplication.shared.delegate as! AppDelegate).authorizationFlow = authorizationFlow
         }
 
-4.  In your `AppDelegate`, call the `LROAuth2AuthorizationFlow` method 
-    `resumeAuthorizationFlow` in the `application(_:open:options:)` method: 
+6.  In your `AppDelegate`'s `application(_:open:options:)` method, call the 
+    `LROAuth2AuthorizationFlow` method `resumeAuthorizationFlow` with the URL as 
+    its argument. For more information on the `application(_:open:options:)` 
+    method, see the section *Handle Incoming URLs* in 
+    [Apple's documentation on using custom URLs](https://developer.apple.com/documentation/uikit/core_app/communicating_with_other_apps_using_custom_urls): 
 
         @UIApplicationMain
         class AppDelegate: UIResponder, UIApplicationDelegate {
