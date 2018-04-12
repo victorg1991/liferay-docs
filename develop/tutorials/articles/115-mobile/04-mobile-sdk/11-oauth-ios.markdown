@@ -219,4 +219,84 @@ Owner Password grant type:
 
 ## Client Credentials
 
+The Client Credentials grant type in OAuth 2 authenticates without requiring 
+user interaction. This is useful when the app needs to access its own resources, 
+not those of a specific user. The iOS app authenticates via the OAuth 2 
+application's client ID and client secret, which you can find in the OAuth 2 
+application in the portal. 
 
++$$$
+
+**Warning:** The Client Credentials grant type poses a security risk to the 
+portal. To use this grant type, the mobile app must contain the OAuth 2 
+application's client ID and client secret, which are used to authenticate 
+without user credentials. Anyone who can access those values via the mobile app 
+can also authenticate without user credentials. 
+
+$$$
+
+To authenticate with the Client Credentials grant type, you must call the 
+`LROAuth2SignIn.signIn` method that lacks arguments for user credentials or 
+redirect URLs: 
+
+    LROAuth2SignIn.clientCredentialsSignIn(with: LRSession, clientId: String, 
+        clientSecret: String, scopes: [String], callback: (LRSession?, Error?) -> Void)
+
+Here are descriptions of this method's parameters: 
+
+-   `with`: The session that you want to authenticate. It must have the 
+    server property set. 
+    <!-- What server property? -->
+-   `clientId`: ID of the OAuth2 application. You can find this value in the 
+    portal's OAuth 2 Admin portlet. 
+-   `clientSecret`: The client secret of the OAuth 2 application. You can find 
+    this value in the portal's OAuth 2 Admin portlet. 
+-   `scopes`: The portal permissions to request. You can define a set of 
+    permissions associated with an OAuth2 application in the portal's OAuth2 
+    Admin portlet. Use this property to request a subset of those permissions. 
+    <!-- Why doesn't the example app use this property? -->
+-   `callback`: A function called with the result of the authentication. If 
+    authentication succeeds, you receive a non-null session containing the 
+    authentication; otherwise you receive an error. 
+
+Note that you can call the `LROAuth2SignIn.signIn` method without a callback, 
+instead passing `nil` as the `callback` argument. This causes the request to 
+execute synchronously. If you provide a callback, the request is executed 
+asynchronously in another thread and you receive the response in the callback. 
+
+Follow these steps to call the `LROAuth2SignIn.signIn` method for the Client 
+Credentials grant type: 
+
+1.  If you want to provide a callback, define it now in the view controller in 
+    which you'll call `LROAuth2SignIn.signIn`. In this example, if the 
+    authentication succeeds, the callback prints a success message and calls a 
+    sample method that tests the session's user credentials; otherwise it prints 
+    an error message. Note that your callback can perform any action you need it 
+    to: 
+
+        let oauth2Callback: (LRSession?, Error?) -> Void = { session, error in
+            if let session = session {
+                print("Login successful")
+                testCredentials(session: session)
+            }
+            else {
+                print(error!)
+            }
+        }
+
+2.  In the same view controller, call the `LROAuth2SignIn.signIn` method with 
+    the above parameters. This example does this in a 
+    `loginWithClientCredentials()` method: 
+
+        func loginWithClientCredentials() {
+
+            let clientId = "12345"
+            let clientSecret = "12345"
+
+            _ = try? LROAuth2SignIn.clientCredentialsSignIn(with: session, clientId: clientId, 
+                        clientSecret: clientSecret, scopes: [], callback: oauth2Callback)
+        }
+
+## Related Topics
+
+[Using OAuth 2 in Liferay Screens for iOS]()
