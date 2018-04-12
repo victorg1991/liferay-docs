@@ -143,4 +143,80 @@ Here's an example of this workflow:
 
 ## Resource Owner Password
 
+In the Resource Owner Password grant type, users authenticate by entering their 
+credentials directly in the app. Implementing authentication for this grant type 
+is similar to doing so for the PKCE grant type, except you don't need to 
+configure a redirect URL. You instead handle the user's credentials directly in 
+your iOS app via a slightly different `LROAuth2SignIn.signIn` method: 
+
+    LROAuth2SignIn.signIn(withUsername: String, password: String, session: LRSession, clientId: String, 
+        clientSecret: String, scopes: [String], callback: (LRSession?, Error?) -> Void) -> LRSession?
+
+Compared to the `LROAuth2SignIn.signIn` method used for the PKCE grant type, 
+this one requires the user's credentials instead of a redirect URL. It also 
+requires the OAuth 2 application's client secret from the portal. 
+
+Here are descriptions of this method's parameters: 
+
+-   `withUsername`: the user's username. 
+-   `password`: the user's password.
+-   `session`: The session that you want to authenticate. It must have the 
+    server property set. 
+    <!-- What server property? -->
+-   `clientId`: ID of the OAuth2 application. You can find this value in the 
+    portal's OAuth 2 Admin portlet. 
+-   `clientSecret`: The client secret of the OAuth 2 application. You can find 
+    this value in the portal's OAuth 2 Admin portlet. 
+-   `scopes`: The portal permissions to request. You can define a set of 
+    permissions associated with an OAuth2 application in the portal's OAuth2 
+    Admin portlet. Use this property to request a subset of those permissions. 
+    <!-- Why doesn't the example app use this property? -->
+-   `callback`: A function called with the result of the authentication. If 
+    authentication succeeds, you receive a non-null session containing the 
+    authentication; otherwise you receive an error. 
+
+Note that you can call the `LROAuth2SignIn.signIn` method without a callback, 
+instead passing `nil` as the `callback` argument. This causes the request to 
+execute synchronously. If you provide a callback, the request is executed 
+asynchronously in another thread and you receive the response in the callback. 
+
+Follow these steps to call the `LROAuth2SignIn.signIn` method for the Resource 
+Owner Password grant type: 
+
+1.  If you want to provide a callback, define it now in the view controller in 
+    which you'll call `LROAuth2SignIn.signIn`. In this example, if the 
+    authentication succeeds, the callback prints a success message and calls a 
+    sample method that tests the session's user credentials; otherwise it prints 
+    an error message. Note that your callback can perform any action you need it 
+    to: 
+
+        let oauth2Callback: (LRSession?, Error?) -> Void = { session, error in
+            if let session = session {
+                print("Login successful")
+                testCredentials(session: session)
+            }
+            else {
+                print(error!)
+            }
+        }
+
+2.  In the same view controller, call the `LROAuth2SignIn.signIn` method with 
+    the above parameters. This example does this in a 
+    `loginWithUsernameAndPassword()` method: 
+
+        func loginWithUsernameAndPassword() {
+            if password.isEmpty {
+                fatalError("you have to enter the password")
+            }
+
+            let clientId = "12345"
+            let clientSecret = "12345"
+
+            _ = try? LROAuth2SignIn.signIn(withUsername: "test@liferay.com", password: password,
+                        session: session, clientId: clientId, clientSecret: clientSecret, scopes: [], 
+                        callback: oauth2Callback)
+        }
+
+## Client Credentials
+
 
