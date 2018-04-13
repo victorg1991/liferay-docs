@@ -1,4 +1,4 @@
-# Using OAuth 2 in Liferay Screens for iOS
+# Using OAuth 2 in Liferay Screens for iOS [](id=using-oauth-2-in-liferay-screens-for-ios)
 
 Liferay Screens lets you use 
 [OAuth 2](https://oauth.net/2/) 
@@ -27,7 +27,7 @@ You can use the following
 
 This tutorial shows you how to set all 3 of these OAuth 2 grant types. 
 
-## Authorization Code (PKCE)
+## Authorization Code (PKCE) [](id=authorization-code-pkce)
 
 Follow these steps to use the Authorization Code grant type with Login 
 Screenlet: 
@@ -70,7 +70,7 @@ Screenlet:
 Note that you can cancel the authorization at any time by calling 
 `SessionContext.oauth2Cancel()`. 
 
-## Resource Owner Password
+## Resource Owner Password [](id=resource-owner-password)
 
 Follow these steps to use the Resource Owner Password grant type with Login 
 Screenlet: 
@@ -99,7 +99,7 @@ Screenlet:
     the OAuth 2 application. You can find this value in the portal's OAuth 2 
     Admin portlet. 
 
-## Client Credentials
+## Client Credentials [](id=client-credentials)
 
 The Client Credentials grant type in OAuth 2 authenticates without requiring 
 user interaction. This is useful when the app needs to access its own resources, 
@@ -118,7 +118,7 @@ $$$
 Follow these steps to use the Client Credentials grant type in your Screens app: 
 
 1.  Follow the 
-    [iOS Mobile SDK instructions]() 
+    [iOS Mobile SDK instructions](/develop/tutorials/-/knowledge_base/7-0/using-oauth-2-in-the-ios-mobile-sdk#client-credentials) 
     for using the Client Credentials grant type. 
 
 2.  The session object's `authentication` property now contains a valid 
@@ -133,8 +133,8 @@ Follow these steps to use the Client Credentials grant type in your Screens app:
     This initializes the Screens `SessionContext` object, authenticating any 
     Screenlets that you use in the iOS app. 
 
-## Related Topics
+## Related Topics [](id=related-topics)
 
-[Using OAuth 2 in the iOS Mobile SDK]()
+[Using OAuth 2 in the iOS Mobile SDK](/develop/tutorials/-/knowledge_base/7-0/using-oauth-2-in-the-ios-mobile-sdk)
 
 [Using Screenlets in iOS Apps](/develop/tutorials/-/knowledge_base/7-0/using-screenlets-in-ios-apps)

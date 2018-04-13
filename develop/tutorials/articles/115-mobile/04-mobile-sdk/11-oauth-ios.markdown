@@ -1,4 +1,4 @@
-# Using OAuth 2 in the iOS Mobile SDK
+# Using OAuth 2 in the iOS Mobile SDK [](id=using-oauth-2-in-the-ios-mobile-sdk)
 
 The Liferay Mobile SDK for iOS lets you use OAuth 2 to authenticate to the 
 portal. The following 3 OAuth 2 grant types are supported: 
@@ -24,7 +24,7 @@ portal. The following 3 OAuth 2 grant types are supported:
 This tutorial shows you how to use these OAuth 2 grant types in your iOS app via 
 the Mobile SDK. 
 
-## Authorization Code (PKCE)
+## Authorization Code (PKCE) [](id=authorization-code-pkce)
 
 The Authorization Code grant type opens a mobile browser window containing the 
 portal's login page, then redirects the user back to the app following login. 
@@ -141,7 +141,7 @@ Here's an example of this workflow:
 
         }
 
-## Resource Owner Password
+## Resource Owner Password [](id=resource-owner-password)
 
 In the Resource Owner Password grant type, users authenticate by entering their 
 credentials directly in the app. Implementing authentication for this grant type 
@@ -217,7 +217,7 @@ Owner Password grant type:
                         callback: oauth2Callback)
         }
 
-## Client Credentials
+## Client Credentials [](id=client-credentials)
 
 The Client Credentials grant type in OAuth 2 authenticates without requiring 
 user interaction. This is useful when the app needs to access its own resources, 
@@ -259,10 +259,14 @@ Here are descriptions of this method's parameters:
     authentication succeeds, you receive a non-null session containing the 
     authentication; otherwise you receive an error. 
 
-Note that you can call the `LROAuth2SignIn.signIn` method without a callback, 
-instead passing `nil` as the `callback` argument. This causes the request to 
++$$$
+
+**Note:** You can call the `LROAuth2SignIn.signIn` method without a callback. To 
+do this, pass `nil` as the `callback` argument. This causes the request to 
 execute synchronously. If you provide a callback, the request is executed 
 asynchronously in another thread and you receive the response in the callback. 
+
+$$$
 
 Follow these steps to call the `LROAuth2SignIn.signIn` method for the Client 
 Credentials grant type: 
@@ -297,6 +301,6 @@ Credentials grant type:
                         clientSecret: clientSecret, scopes: [], callback: oauth2Callback)
         }
 
-## Related Topics
+## Related Topics [](id=related-topics)
 
-[Using OAuth 2 in Liferay Screens for iOS]()
+[Using OAuth 2 in Liferay Screens for iOS](/develop/tutorials/-/knowledge_base/7-0/using-oauth-2-in-liferay-screens-for-ios)
