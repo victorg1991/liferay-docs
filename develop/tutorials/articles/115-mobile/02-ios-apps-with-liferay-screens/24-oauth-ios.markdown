@@ -8,15 +8,15 @@ You can use the following
 [OAuth 2 grant types](https://oauth.net/2/grant-types/): 
 
 -   [**Authorization Code (PKCE for native apps):**](https://oauth.net/2/grant-types/authorization-code/) 
-    Redirects users to a page in their mobile browser where they must enter 
-    their credentials. Following login, the browser redirects users back to the 
-    mobile app. The app never accesses the credentials--it uses a token that can 
-    be easily revoked. User credentials therefore can't be compromised via the 
-    app. This type of authentication is also useful in cases where users may not 
-    want to enter their credentials in the app. For example, users may not want 
-    to enter their Twitter credentials directly in a 3rd-party Twitter app, 
-    preferring instead to authenticate via Twitter's official site. Note that 
-    the site you redirect to for authentication must have OAuth 2 implemented. 
+    Redirects users to a page in their mobile browser where they enter their 
+    credentials. Following login, the browser redirects users back to the mobile 
+    app. User credentials can't be compromised via the app because it never 
+    accesses them--it uses a token that can be easily revoked. This is also 
+    useful if users don't want to enter their credentials in the app. For 
+    example, users may not want to enter their Twitter credentials directly in a 
+    3rd-party Twitter app, preferring instead to authenticate via Twitter's 
+    official site. Note that the site you redirect to for authentication must 
+    have OAuth 2 implemented. 
 
 -   [**Resource Owner Password:**](https://oauth.net/2/grant-types/password/) 
     Users authenticate by entering their credentials directly in the app. 
@@ -25,15 +25,15 @@ You can use the following
     Authenticates without requiring user interaction. This is useful when the 
     app needs to access its own resources, not those of a specific user. 
 
-This tutorial shows you how to set all 3 of these OAuth 2 grant types. 
+This tutorial shows you how to use all 3 of these OAuth 2 grant types. 
 
 ## Authorization Code (PKCE) [](id=authorization-code-pkce)
 
 Follow these steps to use the Authorization Code grant type with Login 
 Screenlet: 
 
-1.  First, you must set Login Screenlet's `loginMode` attribute to 
-    `oauth2Redirect`. There are 2 ways to do this: 
+1.  Set Login Screenlet's `loginMode` attribute to `oauth2Redirect`. There are 2 
+    ways to do this: 
 
     -   In code, as the Login Screenlet instance's `authType` or `loginMode` 
         property:
@@ -42,25 +42,24 @@ Screenlet:
             // or
             loginScreenlet.loginMode = "oauth2redirect"
 
-        Note that `oauth2redirect` must be a string when setting the `loginMode` 
-        property. 
+        Note that `oauth2redirect` must be a string when set to `loginMode`. 
 
-    -   In Interface Builder, as the value of the *Login Mode* attribute. You 
-        set this in Interface Builder the same way you set other Screenlet 
-        attributes (via the Attributes inspector, with the Screenlet selected in
-        the storyboard). Be sure to enter `oauth2redirect` with no period 
-        preceding it. 
+    -   In Interface Builder, as the value of the *Login Mode* attribute. You do 
+        this the same way you set other Screenlet attributes (via the Attributes 
+        inspector, with the Screenlet selected in the storyboard). Be sure to 
+        enter `oauth2redirect` with no period preceding it. 
 
-2.  Set Login Screenlet's `oauth2clientId` attribute to the ID of the OAuth 2 
-    application. You can find this value in the portal's OAuth 2 Admin portlet. 
+2.  Set Login Screenlet's `oauth2clientId` attribute to the ID of the portal's 
+    OAuth 2 application. You can find this value in the portal's OAuth 2 Admin 
+    portlet. 
 
 3.  Set Login Screenlet's `oauth2redirectUrl` attribute to the URL that the 
     mobile browser will redirect the user to after successful login. You must 
     configure this in the portal's OAuth 2 Admin portlet, and associate the URL 
     with the application. 
 
-4.  You must also notify Liferay Screens when the redirect has been performed. 
-    Do this in your `AppDelegate` as follows: 
+4.  Notify Liferay Screens when the redirect has been performed. Do this in your 
+    `AppDelegate` as follows: 
 
         func application(_ app: UIApplication, open url: URL, 
             options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -85,19 +84,21 @@ Screenlet:
             // or
             loginScreenlet.loginMode = "oauth2UsernameAndPassword"
 
-        Note that `oauth2UsernameAndPassword` must be a string when setting the 
-        `loginMode` property. 
+        Note that `oauth2UsernameAndPassword` must be a string when setting 
+        `loginMode`. 
 
-    -   In Interface Builder, as the value of the `loginMode` attribute. You set 
-        this in Interface Builder the same way you set other Screenlet 
-        attributes. 
+    -   In Interface Builder, as the value of the *Login Mode* attribute. You do 
+        this the same way you set other Screenlet attributes (via the Attributes 
+        inspector, with the Screenlet selected in the storyboard). Be sure to 
+        enter `oauth2UsernameAndPassword` with no period preceding it. 
 
 2.  Set Login Screenlet's `oauth2clientId` attribute to the ID of the OAuth 2 
-    application. You can find this value in the portal's OAuth 2 Admin portlet. 
+    application in the portal. You can find this value in the portal's OAuth 2 
+    Admin portlet. 
 
 3.  Set Login Screenlet's `oauth2clientSecret` attribute to the client secret of 
-    the OAuth 2 application. You can find this value in the portal's OAuth 2 
-    Admin portlet. 
+    the portal's OAuth 2 application. You can find this value in the portal's 
+    OAuth 2 Admin portlet. 
 
 ## Client Credentials [](id=client-credentials)
 
