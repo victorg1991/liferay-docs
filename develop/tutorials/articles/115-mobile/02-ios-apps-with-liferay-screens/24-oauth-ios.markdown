@@ -25,14 +25,19 @@ You can use the following
     Authenticates without requiring user interaction. This is useful when the 
     app needs to access its own resources, not those of a specific user. 
 
-This tutorial shows you how to use all 3 of these OAuth 2 grant types. 
+This tutorial shows you how to use these grant types with Login Screenlet. 
 
 ## Authorization Code (PKCE) [](id=authorization-code-pkce)
 
 Follow these steps to use the Authorization Code grant type with Login 
 Screenlet: 
 
-1.  Set Login Screenlet's `loginMode` attribute to `oauth2Redirect`. There are 2 
+1.  Configure the URL that the mobile browser will redirect to after the user 
+    authenticates. To do this, follow the first 2 steps in the 
+    [Mobile SDK's Authorization Code instructions](/develop/tutorials/-/knowledge_base/7-0/using-oauth-2-in-the-ios-mobile-sdk#authorization-code-pkce). 
+    Note that you must configure this URL in both the portal and your iOS app. 
+
+2.  Set Login Screenlet's `loginMode` attribute to `oauth2Redirect`. There are 2 
     ways to do this: 
 
     -   In code, as the Login Screenlet instance's `authType` or `loginMode` 
@@ -44,22 +49,24 @@ Screenlet:
 
         Note that `oauth2redirect` must be a string when set to `loginMode`. 
 
-    -   In Interface Builder, as the value of the *Login Mode* attribute. You do 
+    -   In Interface Builder, as the value of the *Login Mode* attribute. Do 
         this the same way you set other Screenlet attributes (via the Attributes 
         inspector, with the Screenlet selected in the storyboard). Be sure to 
         enter `oauth2redirect` with no period preceding it. 
 
-2.  Set Login Screenlet's `oauth2clientId` attribute to the ID of the portal's 
-    OAuth 2 application. You can find this value in the portal's OAuth 2 Admin 
-    portlet. 
+3.  Set Login Screenlet's `oauth2clientId` attribute to the ID of the portal's 
+    OAuth 2 application that you want to use. To find this value, navigate to 
+    that application in the portal's OAuth 2 Admin portlet. 
 
-3.  Set Login Screenlet's `oauth2redirectUrl` attribute to the URL that the 
-    mobile browser will redirect the user to after successful login. You must 
-    configure this in the portal's OAuth 2 Admin portlet, and associate the URL 
-    with the application. 
+4.  Set Login Screenlet's `oauth2redirectUrl` attribute to the URL you 
+    configured in step 1. 
 
-4.  Notify Liferay Screens when the redirect has been performed. Do this in your 
-    `AppDelegate` as follows: 
+5.  In your `AppDelegate`'s `application(_:open:options:)` method, call the 
+    `SessionContext` method `oauth2ResumeAuthorization` with the URL. This 
+    notifies Liferay Screens when the redirect has been performed. For more 
+    information on the `application(_:open:options:)` method, see the section 
+    *Handle Incoming URLs* in 
+    [Apple's documentation on using custom URLs](https://developer.apple.com/documentation/uikit/core_app/communicating_with_other_apps_using_custom_urls): 
 
         func application(_ app: UIApplication, open url: URL, 
             options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -74,8 +81,8 @@ Note that you can cancel the authorization at any time by calling
 Follow these steps to use the Resource Owner Password grant type with Login 
 Screenlet: 
 
-1.  First, you must set Login Screenlet's `loginMode` attribute to 
-    `oauth2UsernameAndPassword`. There are 2 ways to do this: 
+1.  Set Login Screenlet's `loginMode` attribute to `oauth2UsernameAndPassword`. 
+    There are 2 ways to do this: 
 
     -   In code, as the Login Screenlet instance's `authType` or `loginMode` 
         property:
@@ -87,32 +94,30 @@ Screenlet:
         Note that `oauth2UsernameAndPassword` must be a string when setting 
         `loginMode`. 
 
-    -   In Interface Builder, as the value of the *Login Mode* attribute. You do 
+    -   In Interface Builder, as the value of the *Login Mode* attribute. Do 
         this the same way you set other Screenlet attributes (via the Attributes 
         inspector, with the Screenlet selected in the storyboard). Be sure to 
         enter `oauth2UsernameAndPassword` with no period preceding it. 
 
-2.  Set Login Screenlet's `oauth2clientId` attribute to the ID of the OAuth 2 
-    application in the portal. You can find this value in the portal's OAuth 2 
-    Admin portlet. 
+2.  Set Login Screenlet's `oauth2clientId` attribute to the ID of the portal's 
+    OAuth 2 application that you want to use. To find this value, navigate to 
+    that application in the portal's OAuth 2 Admin portlet. 
 
-3.  Set Login Screenlet's `oauth2clientSecret` attribute to the client secret of 
-    the portal's OAuth 2 application. You can find this value in the portal's 
-    OAuth 2 Admin portlet. 
+3.  Set Login Screenlet's `oauth2clientSecret` attribute to the same OAuth 2 
+    application's client secret. 
 
 ## Client Credentials [](id=client-credentials)
 
-The Client Credentials grant type in OAuth 2 authenticates without requiring 
-user interaction. This is useful when the app needs to access its own resources, 
-not those of a specific user. 
+The OAuth 2 Client Credentials grant type authenticates without requiring user 
+interaction. This is useful when the app needs to access its own resources, not 
+those of a specific user. 
 
 +$$$
 
 **Warning:** The Client Credentials grant type poses a security risk to the 
-portal. To use this grant type, the mobile app must contain the OAuth 2 
-application's client ID and client secret, which are used to authenticate 
-without user credentials. Anyone who can access those values via the mobile app 
-can also authenticate without user credentials. 
+portal. To authenticate without user credentials, the mobile app must contain 
+the OAuth 2 application's client ID and client secret. Anyone who can access 
+those values via the mobile app can also authenticate without user credentials. 
 
 $$$
 
@@ -122,9 +127,9 @@ Follow these steps to use the Client Credentials grant type in your Screens app:
     [iOS Mobile SDK instructions](/develop/tutorials/-/knowledge_base/7-0/using-oauth-2-in-the-ios-mobile-sdk#client-credentials) 
     for using the Client Credentials grant type. 
 
-2.  The session object's `authentication` property now contains a valid 
-    authentication object. Cast it to `LROAuth2Authentication` and pass the 
-    result to the `authentication` argument of the `SessionContext` method 
+2.  The session object's `authentication` property contains a valid 
+    authentication object. Cast it to `LROAuth2Authentication` then pass it to 
+    the `authentication` argument of the `SessionContext` method 
     `loginWithOAuth2`: 
 
         let auth = session.authentication as! LROAuth2Authentication
