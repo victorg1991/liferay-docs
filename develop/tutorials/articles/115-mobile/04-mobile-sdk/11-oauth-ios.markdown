@@ -39,9 +39,8 @@ Here are descriptions of this method's parameters:
     login in the mobile browser. You must configure this URL in the portal via 
     the OAuth 2 Admin portlet, and 
     [associate the URL with the iOS app](https://developer.apple.com/documentation/uikit/core_app/communicating_with_other_apps_using_custom_urls). 
--   `session`: The session that you want to authenticate. It must have the 
-    server property set. 
-    <!-- What server property? -->
+-   `session`: The session that you want to authenticate. Its `server` property 
+    must be set. 
 -   `clientId`: The ID of the portal's OAuth 2 application that you want to use. 
     To find this value, navigate to that application in the portal's OAuth 2 
     Admin portlet. 
@@ -102,7 +101,7 @@ Here's an example of this workflow:
     `loginWithRedirect()` method: 
 
         func loginWithRedirect() {
-            let session = LRSession(server: LiferayServerContext.server)
+            let session = LRSession(server: "http://my-server.com")
             let redirectUrl = URL(string: "my-app://my-app")!
             let clientIdRedirect = "54321"
 
@@ -155,9 +154,8 @@ Here are descriptions of this method's parameters:
 
 -   `withUsername`: The user's username. 
 -   `password`: The user's password.
--   `session`: The session that you want to authenticate. It must have the 
-    server property set. 
-    <!-- What server property? -->
+-   `session`: The session that you want to authenticate. Its `server` property 
+    must be set. 
 -   `clientId`: The ID of the portal's OAuth 2 application that you want to use. 
     To find this value, navigate to that application in the portal's OAuth 2 
     Admin portlet. 
@@ -208,6 +206,7 @@ Owner Password grant type:
                 fatalError("you have to enter the password")
             }
 
+            let session = LRSession(server: "http://my-server.com")
             let clientId = "12345"
             let clientSecret = "12345"
 
@@ -240,9 +239,8 @@ redirect URLs:
 
 Here are descriptions of this method's parameters: 
 
--   `with`: The session that you want to authenticate. It must have the 
-    server property set. 
-    <!-- What server property? -->
+-   `with`: The session that you want to authenticate. Its `server` property 
+    must be set. 
 -   `clientId`: The ID of the portal's OAuth 2 application that you want to use. 
     To find this value, navigate to that application in the portal's OAuth 2 
     Admin portlet. 
@@ -290,6 +288,7 @@ Credentials grant type:
 
         func loginWithClientCredentials() {
 
+            let session = LRSession(server: "http://my-server.com")
             let clientId = "12345"
             let clientSecret = "12345"
 
