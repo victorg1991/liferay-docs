@@ -104,7 +104,7 @@ Kibana's UI or the
 [Change Password API](https://www.elastic.co/guide/en/elasticsearch/reference/6.1/security-api-change-password.html).
 
 The `interactive` argument lets you set the passwords for all built-in users.
-The confioguraiton shown in these articles assumes you set all of the
+The configuraiton shown in these articles assumes you set all of the
 passwords to *liferay*. Of course, that's not recommended for production systems.
 
     ./bin/x-pack/setup-passwords interactive
@@ -193,7 +193,7 @@ To configure the X-Pack adapter, navigate to *Control Panel*
 &rarr; *Configuration* &rarr; *System Settings*. Find the *Foundation* category and
 click on the *X-Pack Security* entry. You can enter the property values here, but
 it's more common to use a 
-[configuration file](/discover/portal/-/knowledge_base/7-1/understanding-system-configuration-files)
+[configuration file](/discover/portal/-/knowledge_base/7-0/understanding-system-configuration-files)
 deployed to `Liferay Home/osgi/configs`. For the X-Pack adapter, create a file
 called
 

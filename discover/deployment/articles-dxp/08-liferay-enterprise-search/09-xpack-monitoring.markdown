@@ -25,11 +25,15 @@ This document assumes you're enabling security *and* monitoring, though it's not
 a requirement. Differences in the process are noted as appropriate.
 
 For the X-Pack installation procedure, refer to the 
-[X-Pack security article](/discover/deployment/-/knowledge_base-7-1/securing-elasticsearch-6-with-x-pack).
+[X-Pack security article](/discover/deployment/-/knowledge_base-7-0/securing-elasticsearch-6-with-x-pack).
 
 This guide starts with the installation of Kibana.
 
 ## Install Kibana [](id=install-kibana)
+
+Make sure to install the correct version of Kibana. Check the 
+[Liferay Enterprise Search compatibility matrix](https://web.liferay.com/group/customer/dxp/support/compatibility-matrix/enterprise-search)
+for details.
 
 1.  [Download Kibana](https://www.elastic.co/downloads/kibana) and extract it.
     The root folder is referred to as *Kibana Home*.
@@ -119,7 +123,7 @@ there is to it.
 
 1.  Once the connector is installed and Kibana and Elasticsearch are securely
     configured, create a 
-    [configuration file](/discover/portal/-/knowledge_base/7-1/understanding-system-configuration-files)
+    [configuration file](/discover/portal/-/knowledge_base/7-0/understanding-system-configuration-files)
     named
 
         com.liferay.portal.search.elasticsearch6.xpack.monitoring.web.internal.configuration.XPackMonitoringConfiguration.config
@@ -147,16 +151,11 @@ there is to it.
 
         server.basePath: "/o/portal-search-elasticsearch-xpack-monitoring/xpack-monitoring-proxy"
 
-    +$$$
-
-    **Note:** Once you set the `server.basePath`, you cannot access the Kibana
+    Note that once you set the `server.basePath`, you cannot access the Kibana
     UI through Kibana's URL (for example, `https://localhost:5601`). All access
     to the Kibana UI is via the monitoring portlet, which is only accessible to
     logged in @product@ users. Navigate directly to the portlet using this URL:
     [http://localhost:8080/o/portal-search-elasticsearch-xpack-monitoring/xpack-monitoring-proxy/app/monitoring](http://localhost:8080/o/portal-search-elasticsearch-xpack-monitoring/xpack-monitoring-proxy/app/monitoring)
-
-    $$$
-
 
 5.  Because you're using the Monitoring portlet in @product@ as a proxy to
     Kibana's UI, you must configure the application server's startup JVM
@@ -165,7 +164,7 @@ there is to it.
     First, navigate to Elasticsearch Home and generate a PKSC#12 certificate
     from the CA you created when setting up X-Pack security:
 
-        ./bin/x-pack/certutil cert --ca-cert path/to/ca.crt --ca-key /path/toca.key --ip 127.0.0.1 --dns localhost --name localhost --out /path/to/Elasticsearch_Home/config/localhost.p12
+        ./bin/x-pack/certutil cert --ca-cert /path/to/ca.crt --ca-key /path/to/ca.key --ip 127.0.0.1 --dns localhost --name localhost --out /path/to/Elasticsearch_Home/config/localhost.p12
 
     Next use the `keytool` command to generate a truststore:
 
