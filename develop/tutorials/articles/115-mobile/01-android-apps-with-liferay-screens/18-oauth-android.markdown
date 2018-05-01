@@ -75,9 +75,9 @@ Screenlet:
         />
 
 5.  In your activity that uses Login Screenlet, you must override the 
-    `onActivityResult` method to implement the redirect you configured in step 
-    1. You do this by calling Login Screenlet's `resumeOAuth2RedirectFlow` 
-    method: 
+    `onActivityResult` method to implement the redirect you configured in the 
+    first step. You do this by calling Login Screenlet's 
+    `resumeOAuth2RedirectFlow` method: 
 
         @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
