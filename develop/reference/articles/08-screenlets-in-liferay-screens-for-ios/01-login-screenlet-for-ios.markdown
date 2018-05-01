@@ -117,12 +117,6 @@ OAuth authentication requires the OAuth 2 app from
 For instructions on using OAuth with Login Screenlet, see 
 [this tutorial](/develop/tutorials/-/knowledge_base/7-0/using-oauth-2-in-liferay-screens-for-ios). 
 
-<!--
-<iframe width="560" height="315" src="https://www.youtube.com/embed/hg70gpUEUI0" frameborder="0" allowfullscreen></iframe>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/fo18U3SHhiI" frameborder="0" allowfullscreen></iframe>
--->
-
 ## Offline [](id=offline)
 
 This Screenlet doesn't support offline mode. It requires network connectivity.

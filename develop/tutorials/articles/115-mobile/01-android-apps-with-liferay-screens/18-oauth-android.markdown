@@ -107,7 +107,7 @@ the previous example.
             loginScreenlet.setAuthenticationType(AuthenticationType.OAUTH2REDIRECT);
 
     -   When inserting Login Screenlet's XML, set the `loginMode` attribute to 
-        `oauth2Redirect`.
+        `oauth2UsernameAndPassword`.
 
 2.  In Login Screenlet's XML, set Login Screenlet's `oauth2ClientId` attribute 
     to the ID of the portal's OAuth 2 application that you want to use. To find 
