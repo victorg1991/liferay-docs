@@ -69,7 +69,6 @@ Screenlet:
             app:loginMode="oauth2Redirect"
             app:oauth2Redirect="my-app://my-app"
             app:oauth2ClientId="54321"
-            app:basicAuthMethod="email"
             app:credentialsStorage="shared_preferences"
         />
 
