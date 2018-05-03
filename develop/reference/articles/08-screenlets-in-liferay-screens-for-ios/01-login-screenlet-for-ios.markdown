@@ -134,6 +134,7 @@ connection, you can use the `saveCredentials` attribute together with the
 | `oauth2clientId` | `string` | The ID of the OAuth 2 application in the portal. You can find this value in the portal's OAuth 2 Admin portlet. |
 | `oauth2redirectUrl` | `string` | The URL that the mobile browser will redirect the user to after successful login. You must configure this in the portal's OAuth 2 Admin portlet, and associate the URL with the iOS app. |
 | `oauth2clientSecret` | `string` | The client secret of the OAuth 2 application in the portal. You can find this value in the portal's OAuth 2 Admin portlet. |
+| `oauth2Scopes` | `string` | The portal permissions to request. You can define a set of permissions associated with an OAuth 2 application in the portal's OAuth 2 Admin portlet. Use this attribute to request a subset of those permissions. Separate multiple scopes with a space (e.g., `"scope1 scope2 scope3"`). |
 | `saveCredentials` | `boolean` | When set, the user credentials and attributes are stored securely in the keychain. This information can then be loaded in subsequent sessions by calling the `SessionContext.loadStoredCredentials()` method. |
 | `shouldHandleCookieExpiration` | `bool` | Whether to refresh the cookie automatically when using cookie login. When set to `true` (the default value), the cookie refreshes as it's about to expire.  |
 | `cookieExpirationTime` | `int` | How long the cookie lasts, in seconds. This value depends on your portal instance's configuration. The default value is `900`. |

@@ -41,9 +41,10 @@ Screenlet:
 2.  Set Login Screenlet's `loginMode` attribute to `oauth2Redirect`. There are 2 
     ways to do this: 
 
-    -   In code, as the Login Screenlet instance's `authenticationType` or 
-        `loginMode` variable:
-        <!-- Add example of loginMode? I can't find it in LoginScreenlet. -->
+    -   In code, as the Login Screenlet instance's `authenticationType` 
+        variable. You must set this variable via Login Screenlet's 
+        `setAuthenticationType` method, using the `AuthenticationType` enum 
+        constant `OAUTH2REDIRECT`:
 
 			loginScreenlet.setAuthenticationType(AuthenticationType.OAUTH2REDIRECT); 
 
@@ -60,7 +61,6 @@ Screenlet:
 
     Here's an example of Login Screenlet's XML with the attributes from the 
     preceding steps:
-    <!-- What is the oauth2Scopes attribute? -->
 
         <com.liferay.mobile.screens.auth.login.LoginScreenlet
             android:id="@+id/login_screenlet"
@@ -69,7 +69,6 @@ Screenlet:
             app:loginMode="oauth2Redirect"
             app:oauth2Redirect="my-app://my-app"
             app:oauth2ClientId="54321"
-            app:oauth2Scopes="HEAD everything"
             app:basicAuthMethod="email"
             app:credentialsStorage="shared_preferences"
         />
@@ -92,19 +91,16 @@ Screenlet:
 
 Follow these steps to use the Resource Owner Password grant type with Login 
 Screenlet: 
-<!-- 
-The examples (and some of the text) in this section were copied unchanged from 
-the previous example. 
--->
 
 1.  Set Login Screenlet's `loginMode` attribute to `oauth2UsernameAndPassword`. 
     There are 2 ways to do this: 
 
-    -   In code, as the Login Screenlet instance's `authenticationType` or 
-        `loginMode` variable:
-        <!-- Add example of loginMode? I can't find it in LoginScreenlet. -->
+    -   In code, as the Login Screenlet instance's `authenticationType` 
+        variable. You must set this variable via Login Screenlet's 
+        `setAuthenticationType` method, using the `AuthenticationType` enum 
+        constant `OAUTH2USERNAMEANDPASSWORD`:
 
-            loginScreenlet.setAuthenticationType(AuthenticationType.OAUTH2REDIRECT);
+            loginScreenlet.setAuthenticationType(AuthenticationType.OAUTH2USERNAMEANDPASSWORD);
 
     -   When inserting Login Screenlet's XML, set the `loginMode` attribute to 
         `oauth2UsernameAndPassword`.
@@ -124,10 +120,9 @@ the previous example.
             android:id="@+id/login_screenlet"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:loginMode="oauth2Redirect"
-            app:oauth2Redirect="my-app://my-app"
+            app:loginMode="oauth2UsernameAndPassword"
             app:oauth2ClientId="54321"
-            app:oauth2Scopes="HEAD everything"
+            app:oauth2ClientSecret="12345"
             app:basicAuthMethod="email"
             app:credentialsStorage="shared_preferences"
         />
