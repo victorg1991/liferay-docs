@@ -131,6 +131,12 @@ Here's an example of this workflow:
                 );
             }
         }
+        
+   +$$$
+
+	**Note:** If you are using a local server with a ip different than 127.0.0.1 or localhost the redirect flow wouldn't work. Liferay would not redirect to this ip unless you add you list it as supported in you r instance. In order to do that you should define a new property in portal-ext.properties files with the following content: `redirect.url.ips.allowed=<your-local-ip>`
+	
+	$$$
 
 ## Resource Owner Password [](id=resource-owner-password)
 
